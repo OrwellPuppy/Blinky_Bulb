@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/blinky_bulb.iml" filepath="$PROJECT_DIR$/blinky_bulb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/blinky_bulb_android.iml" filepath="$PROJECT_DIR$/android/blinky_bulb_android.iml" />
+    </modules>
+  </component>
+</project>
