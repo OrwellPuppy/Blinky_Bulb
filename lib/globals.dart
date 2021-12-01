@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:blinky_bulb/complete_board.dart';
 
+//animation speed settings
+const bulbDuration = const Duration(milliseconds: 1100);
+const pieceFade = const Duration(milliseconds: 450);
+const pieceCurve = Curves.easeOutCubic;
+
 class Node {
   final int row;
   final int col;
@@ -12,7 +17,6 @@ class Node {
     return 'Node($row, $col)';
   }
 
-  //todo: QQ node
   String getCompact() {
     return '$row, $col, ';
   }
@@ -578,4 +582,21 @@ double getWidth(BuildContext context) {
       MediaQuery.of(context).size.width - paddingWidth,
       (MediaQuery.of(context).size.height - paddingHeight) * 1.1);
   return effectiveWidth;
+}
+
+math.Point getBlastPoint(double sWidth, double sHeight, double radius) {
+  final rng = new math.Random();
+  double x;
+  double y;
+
+  //ensure it's to the left or right of screen
+  x = (sWidth / 2) -
+      radius +
+      (rng.nextInt(2) * 2 - 1) *
+          (sWidth * .15 * rng.nextDouble() + sWidth + radius);
+  y = (sHeight / 2) -
+      radius +
+      (rng.nextInt(2) * 2 - 1) * (sHeight * .75 * rng.nextDouble());
+
+  return new math.Point(x, y);
 }

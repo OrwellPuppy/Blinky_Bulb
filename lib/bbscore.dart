@@ -27,14 +27,15 @@ class ScoreModel extends ChangeNotifier {
       expertNames.add(prefs.getString('expertName$i') ?? '-');
       expertDates.add(prefs.getString('expertDate$i') ?? '-');
     }
-    progressionLevel = prefs.getString('progressionLevel') ?? 1;
-    winStreak = prefs.getString('winStreak') ?? 0;
+    progressionLevel = prefs.getInt('progressionLevel') ?? 1;
+    winStreak = prefs.getInt('winStreak') ?? 0;
     //print
     print('loaded Progression Level: $progressionLevel');
     print('loaded Win Streak: $winStreak');
     print('loaded Expert Scores: $expertScores');
     print('loaded Expert Names: $expertNames');
     print('loaded Expert Dates: $expertDates');
+    notifyListeners();
   }
 
   saveData() async {
@@ -53,6 +54,7 @@ class ScoreModel extends ChangeNotifier {
     print('saved Expert Scores: $expertScores');
     print('saved Expert Names: $expertNames');
     print('saved Expert Dates: $expertDates');
+    notifyListeners();
   }
 
   clearData() async {

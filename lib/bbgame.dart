@@ -18,19 +18,17 @@ class GameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       //color of the OS bars
-      backgroundColor: Colors.deepOrangeAccent,
+      backgroundColor: Colors.grey[900],
       body: SafeArea(
-          child: Container(
-        //needed to provide size for the layoutbuilder child?
-        color: Colors.black,
         child: LayoutBuilder(builder: (context, constraints) {
           double top = .1;
           double bottom = .1;
           double middle = 1 - top - bottom;
           // Screen is split vertically into three sections
           double topSize = constraints.maxHeight * top;
-          double bottomSize = constraints.maxHeight * bottom;
           double middleSize = constraints.maxHeight * middle;
+          double bottomSize = constraints.maxHeight - topSize - middleSize;
+
           //top section horizontal divisions
           double exitButtonWidth = constraints.maxWidth * .2;
           double selectionsCounterWidth = constraints.maxWidth * .5;
@@ -42,119 +40,145 @@ class GameScreen extends StatelessWidget {
           double clueButtonWidth = constraints.maxWidth * .2;
           double sidePads = constraints.maxWidth * .02;
 
+          //todo: figure out best way to handle provider here..
           var rMod = Provider.of<RoundModel>(context, listen: false);
-          return Column(children: [
-            Container(
-                color: Colors.grey[500],
-                height: topSize,
-                child: Padding(
-                    padding: EdgeInsets.only(
-                        left: sidePads, top: 0, right: sidePads, bottom: 0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          new MyButton(
-                              exitButtonWidth,
-                              1,
-                              'exit',
-                              topSize * .33,
-                              0,
-                              horzPads,
-                              buttonTopPad,
-                              buttonTopPad, () {
-                            rMod.gameOver(context);
-                            Navigator.pop(context);
-                          }, false),
-                          Consumer<RoundModel>(
-                              builder: (context, upMod, child) {
-                            return SelectionsCounter(
-                                topSize,
-                                selectionsCounterWidth,
-                                upMod.lights.cBoard.selectionsMax,
-                                upMod.lights.cBoard.selectionsMax -
-                                    upMod.selectCount,
-                                buttonTopPad,
-                                rMod.gameType,
-                                upMod.timeRemaining);
-                          }),
-                          SizedBox(
-                              height: topSize,
-                              width: levelLabelWidth,
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      rMod.gameType == 'prog'
-                                          ? 'level'
-                                          : 'win streak',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'roboto',
-                                        fontSize: topSize * .23,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.yellow,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${rMod.thisLevelOrStreak}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'roboto',
-                                        fontSize: topSize * .43,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.yellow,
-                                      ),
-                                    )
-                                  ])),
-                        ]))),
-            Selector<RoundModel, int>(
-              //trigger rebuild with new version
-              builder: (context, value, child) =>
-                  MiddleScreen(constraints, middleSize),
-              selector: (buildContext, myModel) => myModel.version,
-            ),
-            Container(
-                color: Colors.grey[900],
-                height: bottomSize,
-                child: Consumer<RoundModel>(builder: (context, upMod, child) {
-                  return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        BottomButton(
-                            topSize,
-                            clueButtonWidth,
-                            buttonTopPad,
-                            rMod.triggerClue,
-                            'clue',
-                            true,
-                            upMod.clueA,
-                            'clueA',
-                            upMod.clueARelease),
-                        BottomButton(
-                            topSize,
-                            clearButtonWidth,
-                            buttonTopPad,
-                            rMod.clearSelections,
-                            'clear',
-                            true,
-                            true,
-                            'clear',
-                            true),
-                        BottomButton(
-                            topSize,
-                            clueButtonWidth,
-                            buttonTopPad,
-                            rMod.triggerClue,
-                            'clue',
-                            true,
-                            upMod.clueB,
-                            'clueB',
-                            upMod.clueBRelease),
-                      ]);
-                }))
-          ]);
+          var tMod = Provider.of<RoundModel>(context, listen: true);
+          return AnimatedContainer(
+              duration: const Duration(milliseconds: 2000),
+              color: (tMod.phase == 'blastOff') ? Colors.black : Colors.yellow,
+              key: Key('main'),
+              curve: Curves.easeInCubic,
+              onEnd: () {
+                Navigator.pop(context);
+              },
+              child: Column(children: [
+                AnimatedOpacity(
+                    duration: pieceFade,
+                    curve: pieceCurve,
+                    opacity: tMod.phase == 'blastOff' ? 0 : 1,
+                    child: Container(
+                        color: Colors.black,
+                        height: topSize,
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                left: sidePads,
+                                top: 0,
+                                right: sidePads,
+                                bottom: 0),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  new MyButton(
+                                      exitButtonWidth,
+                                      1,
+                                      'exit',
+                                      topSize * .33,
+                                      0,
+                                      horzPads,
+                                      buttonTopPad,
+                                      buttonTopPad, () {
+                                    rMod.gameOver(context);
+                                    Navigator.pop(context);
+                                  }, false),
+                                  Consumer<RoundModel>(
+                                      builder: (context, upMod, child) {
+                                    return SelectionsCounter(
+                                        topSize,
+                                        selectionsCounterWidth,
+                                        upMod.lights.cBoard.selectionsMax,
+                                        upMod.lights.cBoard.selectionsMax -
+                                            upMod.selectCount,
+                                        buttonTopPad,
+                                        rMod.gameType,
+                                        upMod.timeRemaining);
+                                  }),
+                                  SizedBox(
+                                      height: topSize,
+                                      width: levelLabelWidth,
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              rMod.gameType == 'prog'
+                                                  ? 'level'
+                                                  : 'win streak',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontFamily: 'roboto',
+                                                fontSize: topSize * .23,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.yellow,
+                                              ),
+                                            ),
+                                            Text(
+                                              '${rMod.thisLevelOrStreak}',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontFamily: 'roboto',
+                                                fontSize: topSize * .43,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.yellow,
+                                              ),
+                                            )
+                                          ])),
+                                ])))),
+                Selector<RoundModel, int>(
+                  //TODO: figure out best way to handle selector here..
+                  //trigger rebuild with new version
+                  builder: (context, value, child) =>
+                      MiddleScreen(constraints, middleSize),
+                  selector: (buildContext, myModel) => myModel.version,
+                ),
+                AnimatedOpacity(
+                    duration: pieceFade,
+                    curve: pieceCurve,
+                    opacity: tMod.phase == 'blastOff' ? 0 : 1,
+                    child: Container(
+                        color: Colors.black,
+                        //color: Colors.grey[900],
+                        height: bottomSize,
+                        child: Consumer<RoundModel>(
+                            builder: (context, upMod, child) {
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                BottomButton(
+                                    topSize,
+                                    clueButtonWidth,
+                                    buttonTopPad,
+                                    rMod.triggerClue,
+                                    'clue',
+                                    true,
+                                    upMod.clueA,
+                                    'clueA',
+                                    upMod.clueARelease),
+                                BottomButton(
+                                    topSize,
+                                    clearButtonWidth,
+                                    buttonTopPad,
+                                    rMod.clearSelections,
+                                    'clear',
+                                    true,
+                                    true,
+                                    'clear',
+                                    true),
+                                BottomButton(
+                                    topSize,
+                                    clueButtonWidth,
+                                    buttonTopPad,
+                                    rMod.triggerClue,
+                                    'clue',
+                                    true,
+                                    upMod.clueB,
+                                    'clueB',
+                                    upMod.clueBRelease),
+                              ]);
+                        })))
+              ]));
         }),
-      )),
+      ),
     );
   }
 }
@@ -181,7 +205,7 @@ class SelectionsCounter extends StatelessWidget {
       height: clockHeight,
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
-        color: Colors.grey[800],
+        color: Colors.grey[900],
         border: Border.all(
           color: Colors.white,
         ),
@@ -215,7 +239,7 @@ class SelectionsCounter extends StatelessWidget {
         height: circleSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: selectionsCurrent >= i ? Colors.greenAccent : Colors.grey,
+          color: selectionsCurrent >= i ? Colors.greenAccent : Colors.grey[900],
           border: Border.all(
             color:
                 selectionsCurrent >= i ? Colors.greenAccent : Colors.blueGrey,
@@ -298,10 +322,12 @@ class MiddleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO: fix this use of provider, replace version with phase?
     var rMod = Provider.of<RoundModel>(context, listen: false);
+    var gMod = Provider.of<RoundModel>(context, listen: true);
     Widget myWidget;
     if (rMod.lights.cBoard.isHexBoard) {
-      myWidget = Container(
+      myWidget = SizedBox(
           height: middleSize,
           child: PolygonGrid(
               rMod.lights.cBoard.rows,
@@ -310,9 +336,10 @@ class MiddleScreen extends StatelessWidget {
               middleSize,
               rMod.lights.cBoard.cornerStart,
               0.03,
-              rMod.lights.cBoard.gameBoard));
+              rMod.lights.cBoard.gameBoard,
+              gMod.phase));
     } else if (!rMod.lights.cBoard.isHexBoard) {
-      myWidget = Container(
+      myWidget = SizedBox(
           height: middleSize,
           child: SquareGrid(
               rMod.lights.cBoard.rows,
@@ -321,7 +348,8 @@ class MiddleScreen extends StatelessWidget {
               middleSize,
               rMod.lights.cBoard.cornerStart,
               0.03,
-              rMod.lights.cBoard.gameBoard));
+              rMod.lights.cBoard.gameBoard,
+              gMod.phase));
     }
     return myWidget;
   }
@@ -332,36 +360,43 @@ class PolygonGrid extends StatelessWidget {
   final int columns; //number of columns in grid
   final double osWidth; //original-screen grid space width
   final double osHeight; //original-screen grid space height
-
   final bool cornerStart; //start with hex in top left corner (true), or not
   final double spacing; //spacing as percent of radius
   final List<List<NodeType>> gameBoard; //type of bulbs
+  final String phase;
 
   PolygonGrid(this.rows, this.columns, this.osWidth, this.osHeight,
-      this.cornerStart, this.spacing, this.gameBoard);
+      this.cornerStart, this.spacing, this.gameBoard, this.phase);
 
   @override
   Widget build(BuildContext context) {
+    print("build: HexGrid");
     double sWidth; //grid space width
     double sHeight; //grid space height
-    print("build: HexGrid");
-    double radius;
-    double littleRadius;
     double widthSlack;
     double heightSlack;
+    //initialize my list of hexagons to include a non-positioned transparent container
+    //which will cause the stack to expand to the size of the parent widget
+    List<Widget> gonList = [
+      AnimatedContainer(
+          color: (phase == 'blastOff') ? Colors.transparent : Colors.black,
+          duration: pieceFade,
+          curve: pieceCurve,
+          key: Key('middle'))
+    ];
+
+    bool flip = false;
+
+    double radius;
+    double littleRadius;
     int startTop = 1;
     int oppoStartTop = 0;
     double spacingSize;
+
     if (cornerStart) {
       startTop = 0;
       oppoStartTop = 1;
     }
-    //initialize my list of hexagons to include a non-positioned transparent container
-    //which will cause the stack to expand to the size of the parent widget
-    List<Widget> gonList = [Container()];
-    bool flip = false;
-    //double denseSide = ((columns * 3 / 4) + 1 / 4) * (math.sqrt(3) / 2);
-    //double spacedSide = (rows / 2 + .5);
 
     //max inner-hex-diameter size feasible based on columns/sWidth
     double colMaxD = osWidth / ((columns * 3 / 4) + 1 / 4) * (math.sqrt(3) / 2);
@@ -421,13 +456,18 @@ class PolygonGrid extends StatelessWidget {
             xCoord = yCoord;
             yCoord = calcCoord;
           }
+          if (phase == 'start') {
+            xCoord = osWidth / 2 - littleRadius;
+            yCoord = osHeight / 2 - littleRadius;
+          } else if (phase == "blastOff") {
+            math.Point theBlastPoint =
+                getBlastPoint(osWidth, osHeight, littleRadius);
+            xCoord = theBlastPoint.x;
+            yCoord = theBlastPoint.y;
+          }
           gonList.add(
-            Positioned(
-              top: yCoord,
-              left: xCoord,
-              child: new Bulb(radius, littleRadius, spacingSize, i, j,
-                  gameBoard[i][j], flip, 6),
-            ),
+            new Bulb(radius, littleRadius, spacingSize, i, j, gameBoard[i][j],
+                flip, 6, xCoord, yCoord),
           );
         }
       }
@@ -448,8 +488,20 @@ class PolygonGrid extends StatelessWidget {
               xCoord = yCoord;
               yCoord = calcCoord;
             }
+            if (phase == 'start') {
+              xCoord = osWidth / 2 - littleRadius;
+              yCoord = osHeight / 2 - littleRadius;
+            } else if (phase == "blastOff") {
+              math.Point theBlastPoint =
+                  getBlastPoint(osWidth, osHeight, littleRadius);
+              xCoord = theBlastPoint.x;
+              yCoord = theBlastPoint.y;
+            }
+
             gonList.add(
-              Positioned(
+              AnimatedPositioned(
+                  key: Key('arrow $i $j'),
+                  duration: bulbDuration,
                   top: yCoord,
                   left: xCoord,
                   child: new CustomPaint(
@@ -461,6 +513,7 @@ class PolygonGrid extends StatelessWidget {
       }
     }
     return Stack(
+      clipBehavior: Clip.none,
       children: gonList,
     );
   }
@@ -474,24 +527,34 @@ class SquareGrid extends StatelessWidget {
   final bool cornerStart; //start with hex in top left corner (true), or not
   final double spacing; //spacing as percent of radius
   final List<List<NodeType>> gameBoard; //type of bulbs
+  final String phase;
+
   SquareGrid(this.rows, this.columns, this.osWidth, this.osHeight,
-      this.cornerStart, this.spacing, this.gameBoard);
+      this.cornerStart, this.spacing, this.gameBoard, this.phase);
 
   @override
   Widget build(BuildContext context) {
+    print("build: SquareGrid");
     double sWidth; //grid space width
     double sHeight; //grid space height
-    print("build: SquareGrid");
-    double bulbSize;
     double widthSlack;
     double heightSlack;
+    List<Widget> gonList = [
+      AnimatedContainer(
+          color: (phase == 'blastOff') ? Colors.transparent : Colors.black,
+          duration: pieceFade,
+          curve: pieceCurve,
+          key: Key('middle'))
+    ];
+    bool flip = false;
+
+    double bulbSize;
     double spacingSize;
     int minSqNumWidth =
         5; //caps maximum square size by ensuring at least this many can fit
     //initialize my list of squares to include a non-positioned transparent container
     //which will cause the stack to expand to the size of the parent widget
-    List<Widget> gonList = [Container()];
-    bool flip = false;
+
     if ((osHeight > osWidth && rows > columns) ||
         (osHeight > osWidth && rows > columns)) {
       sWidth = osWidth;
@@ -525,13 +588,18 @@ class SquareGrid extends StatelessWidget {
           xCoord = yCoord;
           yCoord = calcCoord;
         }
+        if (phase == 'start') {
+          xCoord = osWidth / 2 - (bulbSize / 2);
+          yCoord = osHeight / 2 - (bulbSize / 2);
+        } else if (phase == "blastOff") {
+          math.Point theBlastPoint =
+              getBlastPoint(osWidth, osHeight, bulbSize / 2);
+          xCoord = theBlastPoint.x;
+          yCoord = theBlastPoint.y;
+        }
         gonList.add(
-          Positioned(
-            top: yCoord,
-            left: xCoord,
-            child: new Bulb(math.sqrt(2 * math.pow(bulbSize / 2, 2)),
-                bulbSize / 2, spacingSize, i, j, gameBoard[i][j], flip, 4),
-          ),
+          new Bulb(math.sqrt(2 * math.pow(bulbSize / 2, 2)), bulbSize / 2,
+              spacingSize, i, j, gameBoard[i][j], flip, 4, xCoord, yCoord),
         );
       }
     }
@@ -547,8 +615,19 @@ class SquareGrid extends StatelessWidget {
             xCoord = yCoord;
             yCoord = calcCoord;
           }
+          if (phase == 'start') {
+            xCoord = osWidth / 2 - (bulbSize / 2);
+            yCoord = osHeight / 2 - (bulbSize / 2);
+          } else if (phase == "blastOff") {
+            math.Point theBlastPoint =
+                getBlastPoint(osWidth, osHeight, bulbSize / 2);
+            xCoord = theBlastPoint.x;
+            yCoord = theBlastPoint.y;
+          }
           gonList.add(
-            Positioned(
+            AnimatedPositioned(
+                key: Key('arrow $i $j'),
+                duration: bulbDuration,
                 top: yCoord,
                 left: xCoord,
                 child: new CustomPaint(
@@ -558,7 +637,6 @@ class SquareGrid extends StatelessWidget {
         }
       }
     }
-
     return Stack(
       children: gonList,
     );
@@ -574,9 +652,11 @@ class Bulb extends StatelessWidget {
   final NodeType nodeType;
   final bool flip;
   final int sides;
+  final double xCoord;
+  final double yCoord;
 
   Bulb(this.radius, this.littleRadius, this.spacingSize, this.row, this.col,
-      this.nodeType, this.flip, this.sides);
+      this.nodeType, this.flip, this.sides, this.xCoord, this.yCoord);
 
   @override
   Widget build(BuildContext context) {
@@ -586,45 +666,49 @@ class Bulb extends StatelessWidget {
     var rMod = Provider.of<RoundModel>(context, listen: true);
 
     double calcSize = littleRadius * 2 - .8;
-    return Stack(children: [
-      if (rMod.clueState[row][col])
-        //if (rMod.clueList[0]?.row == row && rMod.clueList[0]?.col == col)
-        //if (nodeType.type == 1) //TODO: clue here
-        CustomPaint(
-          painter: PolygonPainter(Offset(littleRadius, littleRadius),
-              radius - .5, nodeType, flip, sides),
-        ),
-      Listener(
-          onPointerDown: (e) {
-            rMod.tap(row, col);
-            if (rMod.lights.checkIfSolved()) {
-              rMod.gameOver(context);
-            }
-          },
-          child: Container(
-            width: calcSize,
-            height: calcSize,
-            decoration: new BoxDecoration(
-              shape: BoxShape.circle,
-              color: rMod.lights.lightState[row][col]
-                  ? rMod.onColor
-                  : rMod.lights.cBoard.gameBoard[row][col].type == 2
-                      ? Colors.black
-                      : rMod.offColor,
-              border: Border.all(
-                color: rMod.lights.cBoard.gameBoard[row][col].type == 2
-                    ? Colors.black
-                    : rMod.bannedState[row][col]
-                        ? Colors.red
-                        : rMod.selectState[row][col]
-                            ? Colors.greenAccent
-                            : rMod.lights.lightState[row][col]
-                                ? rMod.onColor
-                                : rMod.offColor,
-                width: 4,
-              ),
+    return AnimatedPositioned(
+        key: Key('$row $col'),
+        duration: bulbDuration,
+        curve: Curves.easeOutCubic,
+        top: yCoord + rMod.topBlastDist[row][col],
+        left: xCoord + rMod.leftBlastDist[row][col],
+        child: Stack(children: [
+          if (rMod.clueState[row][col])
+            CustomPaint(
+              painter: PolygonPainter(Offset(littleRadius, littleRadius),
+                  radius - .5, nodeType, flip, sides),
             ),
-            /* SHOWs COORDS FOR TESTING
+          Listener(
+              onPointerDown: (e) {
+                rMod.tap(row, col);
+                if (rMod.lights.checkIfSolved()) {
+                  rMod.gameOver(context);
+                }
+              },
+              child: Container(
+                width: calcSize,
+                height: calcSize,
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: rMod.lights.lightState[row][col]
+                      ? rMod.onColor
+                      : rMod.lights.cBoard.gameBoard[row][col].type == 2
+                          ? Colors.transparent
+                          : rMod.offColor,
+                  border: Border.all(
+                    color: rMod.lights.cBoard.gameBoard[row][col].type == 2
+                        ? Colors.transparent
+                        : rMod.bannedState[row][col]
+                            ? Colors.red
+                            : rMod.selectState[row][col]
+                                ? Colors.greenAccent
+                                : rMod.lights.lightState[row][col]
+                                    ? rMod.onColor
+                                    : rMod.offColor,
+                    width: 4,
+                  ),
+                ),
+                /* SHOWs COORDS FOR TESTING
             child: Center(
                 child: Container(
               child: Text(
@@ -634,8 +718,8 @@ class Bulb extends StatelessWidget {
                     fontSize: littleRadius * .5, color: Colors.deepOrange),
               ),
             )),*/
-          )),
-    ]);
+              )),
+        ]));
   }
 }
 
@@ -835,6 +919,10 @@ class RoundModel extends ChangeNotifier {
   String gameType;
   Timer timer;
   int timeRemaining = 40;
+  int maxLevel;
+  List<List<double>> leftBlastDist;
+  List<List<double>> topBlastDist;
+  String phase = 'game'; //what phase the game is in: start/game/blastOff
 
   RoundModel(BuildContext context, this.gameType, this.thisLevelOrStreak) {
     print('roundModel Built');
@@ -848,6 +936,7 @@ class RoundModel extends ChangeNotifier {
       generateMyCompleteRound(cr);
     } else if (gameType == 'prog') {
       Levels mySavedLevels = new Levels();
+      maxLevel = mySavedLevels.getMaxLevel();
       cr = mySavedLevels.loadLevel(thisLevelOrStreak - 1);
       unpackMyCompleteRound(cr);
       version++;
@@ -868,10 +957,17 @@ class RoundModel extends ChangeNotifier {
 
   generateMyCompleteRound(CompleteRound cr) async {
     cr = await compute(generator, 1); //had to pass a parameter..
+    //phase = "start";
     unpackMyCompleteRound(cr);
     version++;
+    //phase = "game";
     notifyListeners();
-    startTimer();
+    Timer(Duration(milliseconds: 100), () {
+      phase = "game";
+      notifyListeners();
+      startTimer();
+    });
+
     //print to console
     cr.printCompact();
   }
@@ -896,6 +992,17 @@ class RoundModel extends ChangeNotifier {
         lights.cBoard.rows,
         (int i) => List.generate(lights.cBoard.columns, (int j) => false,
             growable: false),
+        growable: false);
+    //initialize for animations
+    topBlastDist = List.generate(
+        lights.cBoard.rows,
+        (int i) =>
+            List.generate(lights.cBoard.columns, (int j) => 0, growable: false),
+        growable: false);
+    leftBlastDist = List.generate(
+        lights.cBoard.rows,
+        (int i) =>
+            List.generate(lights.cBoard.columns, (int j) => 0, growable: false),
         growable: false);
     //calc bannedState from bannedList
     bannedList
@@ -929,11 +1036,16 @@ class RoundModel extends ChangeNotifier {
     if (lights.checkIfSolved()) {
       //todo: victory code here
       print('VICTORY!!');
-
+      phase = 'blastOff';
       if (gameType == 'prog') {
-        sMod.fileProgressionLevel(thisLevelOrStreak + 1);
+        //reset if there's no more levels, else proceed to next level
+        if (thisLevelOrStreak == maxLevel) {
+          sMod.fileProgressionLevel(1);
+        } else {
+          sMod.fileProgressionLevel(thisLevelOrStreak + 1);
+        }
       } else if (gameType == 'roul' && timeRemaining > 0) {
-        //win condition
+        //roulette win condition
         sMod.updateWinStreak(true);
       }
     } else if (gameType == 'roul') {
@@ -998,6 +1110,15 @@ class RoundModel extends ChangeNotifier {
         lights.cBoard.gameBoard[row][col].type != 2) {
       updateSelectState(row, col, selectState);
       lights.updateNode(row, col);
+
+      //leftBlastDist[row][col] = -20;
+      //topBlastDist[row][col] = -20;
+      //Timer(Duration(milliseconds: 1000), () {
+      //  leftBlastDist[row][col] = 0;
+      //  topBlastDist[row][col] = -0;
+      //  notifyListeners();
+      //});
+
       notifyListeners();
     }
   }
@@ -1223,8 +1344,7 @@ class RoundModel extends ChangeNotifier {
 }
 //*****************
 
-//Next figure out how to make the win streak/prog level update
-//Next: begin work on Win Animation
+//Next: begin work on Win/lose transition screen
 
 //figure out how to deal with pressing back button to avoid a loss in roulette
 //re: round generation, maybe make it choose new solution nodes if none are arrows and a fair number of arrows exists

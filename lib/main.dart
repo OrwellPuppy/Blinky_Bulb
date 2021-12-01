@@ -323,6 +323,9 @@ class ScoreScreen extends StatelessWidget {
       ],
     );
 
+    var scoreTextStyle = new TextStyle(
+        fontSize: 20, fontStyle: FontStyle.italic, color: Colors.orange);
+
     List<Widget> scoreList = [];
     for (var i = 0; i < sMod.maxScores; i++) {
       //print(i);
@@ -342,19 +345,19 @@ class ScoreScreen extends StatelessWidget {
                 padding: EdgeInsets.only(left: sideSpace / 2),
                 child: Text(
                   '${((i + 1).toString() + '. ').padRight(4, ' ')}${myNames[i].padRight(10, ' ')}', //
-                  //style: myStyle(myFontSize, 'highScores'),
+                  style: scoreTextStyle,
                 )),
             Spacer(),
             Text(
               '${myDates[i]}',
-              //style: myStyle(myFontSize, 'highScores'),
+              style: scoreTextStyle,
             ),
             Spacer(),
             Padding(
                 padding: EdgeInsets.only(right: sideSpace / 2),
                 child: Text(
                   '${(myScores[i] == 0 ? '-' : myScores[i].toString()).padLeft(7, ' ')}',
-                  //style: myStyle(myFontSize, 'highScores'),
+                  style: scoreTextStyle,
                 )),
           ])));
     }
@@ -366,7 +369,7 @@ class ScoreScreen extends StatelessWidget {
         Padding(
             padding: EdgeInsets.only(top: topSpace * 3, bottom: topSpace),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('HIGH'),
+              Text('HIGH '),
               Text('SCORES'),
             ])),
         Padding(
@@ -381,18 +384,18 @@ class ScoreScreen extends StatelessWidget {
               Text('          '),
               Text(
                 'Name',
-                //style: myStyle(myFontSize + 4, 'highScoreHeader'),
+                style: scoreTextStyle,
               ),
               Text(''),
               Spacer(),
               Text(
                 'Date',
-                //style: myStyle(myFontSize + 4, 'highScoreHeader'),
+                style: scoreTextStyle,
               ),
               Spacer(),
               Text(
                 'Score',
-                //style: myStyle(myFontSize + 4, 'highScoreHeader'),
+                style: scoreTextStyle,
               ),
             ])),
         Flexible(

@@ -58,6 +58,10 @@ class Levels {
   List solutionP = [];
   List bannedP = [];
 
+  int getMaxLevel() {
+    return metaP.length;
+  }
+
   CompleteRound loadLevel(int levelNum) {
     int rows = metaP[levelNum][0];
     int cols = metaP[levelNum][1];
