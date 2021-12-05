@@ -3,9 +3,12 @@ import 'dart:math' as math;
 import 'package:blinky_bulb/complete_board.dart';
 
 //animation speed settings
-const bulbDuration = const Duration(milliseconds: 1100);
+const bulbDuration = const Duration(milliseconds: 1500);
+const startDuration = const Duration(milliseconds: 650);
+const bulbCurve = Curves.decelerate;
+const startCurve = Curves.easeInOut;
 const pieceFade = const Duration(milliseconds: 450);
-const pieceCurve = Curves.easeOutCubic;
+const pieceCurve = Curves.easeOutQuad;
 
 class Node {
   final int row;
@@ -593,7 +596,7 @@ math.Point getBlastPoint(double sWidth, double sHeight, double radius) {
   x = (sWidth / 2) -
       radius +
       (rng.nextInt(2) * 2 - 1) *
-          (sWidth * .15 * rng.nextDouble() + sWidth + radius);
+          (sWidth * .1 * rng.nextDouble() + sWidth + radius);
   y = (sHeight / 2) -
       radius +
       (rng.nextInt(2) * 2 - 1) * (sHeight * .75 * rng.nextDouble());

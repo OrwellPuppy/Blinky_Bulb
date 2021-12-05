@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 //import 'package:flutter/animation.dart';
 
-//import 'package:scrambly_word/globals.dart';
 import 'package:blinky_bulb/bbgame.dart';
 import 'package:blinky_bulb/bbscore.dart';
 import 'package:blinky_bulb/globals.dart';
+import 'package:blinky_bulb/transition.dart';
 
 //import 'dart:ui';
 import 'dart:math';
@@ -55,6 +55,7 @@ void main() {
           },
           '/howToPlay': (context) => HowToScreen(),
           '/highScores': (context) => ScoreScreen(),
+          '/transitionScreen': (context) => MyCustomForm(),
         },
       )));
 }

@@ -10,7 +10,10 @@ class ScoreModel extends ChangeNotifier {
   int winStreak = 0;
   //other variables
   final int maxScores = 10;
-  int lastHighScore = 999; //the place # of the high score set
+  //only temporarily stored variables
+  int lastHighScore = 999; //the place # of the last high score set
+  int pendingLastWinStreak = 0; //last score
+  bool exited = false;
 
   ScoreModel() {
     print('ScoreModel constructed');
@@ -57,6 +60,14 @@ class ScoreModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  updatePendingLastWinStreak(bool clear) {
+    if (clear) {
+      pendingLastWinStreak = 0;
+    } else {
+      pendingLastWinStreak = winStreak;
+    }
+  }
+
   clearData() async {
     final prefs = await SharedPreferences.getInstance();
     for (int i = 0; i < maxScores; i++) {
@@ -70,11 +81,11 @@ class ScoreModel extends ChangeNotifier {
     loadData();
   }
 
-  bool checkHighScore() {
+  bool checkHighScore(int thisWinStreak) {
     //reset last high score
     lastHighScore = 999;
     //returns true if a high score is set
-    return (winStreak > expertScores[maxScores - 1]);
+    return (thisWinStreak > expertScores[maxScores - 1]);
   }
 
   void fileProgressionLevel(int myLevel) {
@@ -83,6 +94,11 @@ class ScoreModel extends ChangeNotifier {
       progressionLevel = myLevel;
       saveData();
     }
+  }
+
+  void overwriteProgressionLevel(int myLevel) {
+    //overwrites current level for testing
+    progressionLevel = myLevel;
   }
 
   void updateWinStreak(bool won) {
@@ -99,17 +115,18 @@ class ScoreModel extends ChangeNotifier {
     DateTime now = new DateTime.now();
     String date = now.toString().substring(0, 10);
 
-    while (expertScores[i] < winStreak) {
+    while (expertScores[i] < pendingLastWinStreak) {
       i--;
       if (i == -1) {
         break;
       }
     }
     i++;
-    expertScores.insert(i, winStreak);
+    expertScores.insert(i, pendingLastWinStreak);
     expertNames.insert(i, newName);
     expertDates.insert(i, date);
     lastHighScore = i;
+    pendingLastWinStreak=0;
     saveData();
   }
 }

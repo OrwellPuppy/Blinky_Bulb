@@ -40,22 +40,24 @@ class GameScreen extends StatelessWidget {
           double clueButtonWidth = constraints.maxWidth * .2;
           double sidePads = constraints.maxWidth * .02;
 
-          //todo: figure out best way to handle provider here..
+          //todo: figure out better way to handle provider here
           var rMod = Provider.of<RoundModel>(context, listen: false);
           var tMod = Provider.of<RoundModel>(context, listen: true);
           return AnimatedContainer(
               duration: const Duration(milliseconds: 2000),
-              color: (tMod.phase == 'blastOff') ? Colors.black : Colors.yellow,
+              color: (tMod.phase == 'game') ? Colors.yellow : Colors.black,
               key: Key('main'),
               curve: Curves.easeInCubic,
               onEnd: () {
-                Navigator.pop(context);
+                if (rMod.phase == 'blastOff') {
+                  rMod.throwTransitionScreen(context);
+                }
               },
               child: Column(children: [
                 AnimatedOpacity(
                     duration: pieceFade,
                     curve: pieceCurve,
-                    opacity: tMod.phase == 'blastOff' ? 0 : 1,
+                    opacity: tMod.phase == 'game' ? 1 : 0,
                     child: Container(
                         color: Colors.black,
                         height: topSize,
@@ -78,8 +80,7 @@ class GameScreen extends StatelessWidget {
                                       horzPads,
                                       buttonTopPad,
                                       buttonTopPad, () {
-                                    rMod.gameOver(context);
-                                    Navigator.pop(context);
+                                    rMod.exitButtonAction(context);
                                   }, false),
                                   Consumer<RoundModel>(
                                       builder: (context, upMod, child) {
@@ -134,7 +135,7 @@ class GameScreen extends StatelessWidget {
                 AnimatedOpacity(
                     duration: pieceFade,
                     curve: pieceCurve,
-                    opacity: tMod.phase == 'blastOff' ? 0 : 1,
+                    opacity: tMod.phase == 'game' ? 1 : 0,
                     child: Container(
                         color: Colors.black,
                         //color: Colors.grey[900],
@@ -501,7 +502,8 @@ class PolygonGrid extends StatelessWidget {
             gonList.add(
               AnimatedPositioned(
                   key: Key('arrow $i $j'),
-                  duration: bulbDuration,
+                  duration: phase == 'blastOff' ? bulbDuration : startDuration,
+                  curve: phase == 'blastOff' ? bulbCurve : startCurve,
                   top: yCoord,
                   left: xCoord,
                   child: new CustomPaint(
@@ -627,7 +629,8 @@ class SquareGrid extends StatelessWidget {
           gonList.add(
             AnimatedPositioned(
                 key: Key('arrow $i $j'),
-                duration: bulbDuration,
+                duration: phase == 'blastOff' ? bulbDuration : startDuration,
+                curve: phase == 'blastOff' ? bulbCurve : startCurve,
                 top: yCoord,
                 left: xCoord,
                 child: new CustomPaint(
@@ -668,8 +671,8 @@ class Bulb extends StatelessWidget {
     double calcSize = littleRadius * 2 - .8;
     return AnimatedPositioned(
         key: Key('$row $col'),
-        duration: bulbDuration,
-        curve: Curves.easeOutCubic,
+        duration: rMod.phase == 'blastOff' ? bulbDuration : startDuration,
+        curve: rMod.phase == 'blastOff' ? bulbCurve : startCurve,
         top: yCoord + rMod.topBlastDist[row][col],
         left: xCoord + rMod.leftBlastDist[row][col],
         child: Stack(children: [
@@ -920,15 +923,17 @@ class RoundModel extends ChangeNotifier {
   Timer timer;
   int timeRemaining = 40;
   int maxLevel;
-  List<List<double>> leftBlastDist;
+  List<List<double>> leftBlastDist; //TODO: remove this probably
   List<List<double>> topBlastDist;
   String phase = 'game'; //what phase the game is in: start/game/blastOff
+  bool won = false; //whether the round was won or lost
 
   RoundModel(BuildContext context, this.gameType, this.thisLevelOrStreak) {
     print('roundModel Built');
     CompleteRound cr;
     //start up the games based on gameType
     if (gameType == 'roul') {
+      phase = 'start';
       //generate simple round for temporary loading screen
       cr = new CompleteRound(new CompleteBoard()..loadLoadingScreen(), [], []);
       unpackMyCompleteRound(cr);
@@ -957,17 +962,21 @@ class RoundModel extends ChangeNotifier {
 
   generateMyCompleteRound(CompleteRound cr) async {
     cr = await compute(generator, 1); //had to pass a parameter..
-    //phase = "start";
-    unpackMyCompleteRound(cr);
-    version++;
-    //phase = "game";
-    notifyListeners();
-    Timer(Duration(milliseconds: 100), () {
-      phase = "game";
+    Timer(Duration(milliseconds: 300), () {
+      //phase = "start";
+      unpackMyCompleteRound(cr);
+      version++;
+      //phase = "game";
       notifyListeners();
-      startTimer();
+      Timer(Duration(milliseconds: 100), () {
+        //TODO: add a timer manager
+        phase = "game";
+        notifyListeners();
+        Timer(Duration(milliseconds: 250), () {
+          startTimer();
+        });
+      });
     });
-
     //print to console
     cr.printCompact();
   }
@@ -1033,27 +1042,65 @@ class RoundModel extends ChangeNotifier {
   void gameOver(BuildContext context) {
     timer?.cancel();
     var sMod = Provider.of<ScoreModel>(context, listen: false);
+    sMod.exited = false;
     if (lights.checkIfSolved()) {
-      //todo: victory code here
-      print('VICTORY!!');
       phase = 'blastOff';
       if (gameType == 'prog') {
+        print('prog VICTORY!!');
         //reset if there's no more levels, else proceed to next level
         if (thisLevelOrStreak == maxLevel) {
-          sMod.fileProgressionLevel(1);
+          sMod.overwriteProgressionLevel(1);
         } else {
           sMod.fileProgressionLevel(thisLevelOrStreak + 1);
         }
       } else if (gameType == 'roul' && timeRemaining > 0) {
+        print('roul VICTORY!!');
         //roulette win condition
         sMod.updateWinStreak(true);
+        sMod.updatePendingLastWinStreak(true);
+        won = true;
+      } else if (gameType == 'roul') {
+        print('roul loss');
+        //lose condition
+        //if (sMod.checkHighScore()) {
+        //  sMod.updateHighScore('testName');
+        //}
+        sMod.updatePendingLastWinStreak(false);
+        sMod.updateWinStreak(false);
       }
-    } else if (gameType == 'roul') {
-      //lose condition
-      if (sMod.checkHighScore()) {
-        sMod.updateHighScore('testName');
+    } else {
+      if (gameType == 'roul') {
+        print('roul exited mid-game');
+        sMod.updatePendingLastWinStreak(false);
+        sMod.updateWinStreak(false);
+      } else {
+        print('prog exited mid-game');
       }
-      sMod.updateWinStreak(false);
+    }
+  }
+
+  void exitButtonAction(BuildContext context) {
+    var sMod = Provider.of<ScoreModel>(context, listen: false);
+    gameOver(context);
+    if (sMod.winStreak == 0 && sMod.checkHighScore(sMod.pendingLastWinStreak)) {
+      Navigator.pop(context);
+      sMod.exited = true;
+      Navigator.pushNamed(context, '/transitionScreen');
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  void throwTransitionScreen(BuildContext context) {
+    if (gameType == 'roul') {
+      //Navigator.pop(context);
+      //Navigator.pushNamed(context, '/transitionScreen');
+      //Navigator.pushReplacementNamed( context, '/transitionScreen');
+      Navigator.pushReplacementNamed(context, '/transitionScreen');
+    } else {
+      //Navigator.pop(context);
+      //Navigator.pushNamed(context, '/progression');
+      Navigator.pushReplacementNamed(context, '/progression');
     }
   }
 
@@ -1344,7 +1391,7 @@ class RoundModel extends ChangeNotifier {
 }
 //*****************
 
-//Next: begin work on Win/lose transition screen
+//Next: work out logic on the transition score screen..
 
 //figure out how to deal with pressing back button to avoid a loss in roulette
 //re: round generation, maybe make it choose new solution nodes if none are arrows and a fair number of arrows exists
