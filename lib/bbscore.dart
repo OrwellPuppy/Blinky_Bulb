@@ -83,7 +83,7 @@ class ScoreModel extends ChangeNotifier {
 
   bool checkHighScore(int thisWinStreak) {
     //reset last high score
-    lastHighScore = 999;
+    //lastHighScore = 999;
     //returns true if a high score is set
     return (thisWinStreak > expertScores[maxScores - 1]);
   }
@@ -126,7 +126,7 @@ class ScoreModel extends ChangeNotifier {
     expertNames.insert(i, newName);
     expertDates.insert(i, date);
     lastHighScore = i;
-    pendingLastWinStreak=0;
+    pendingLastWinStreak = 0;
     saveData();
   }
 }

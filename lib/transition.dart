@@ -91,7 +91,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           child: Text(
             sMod.exited
                 ? "You've forfeited."
-                : "You've solved the puzzle! But not fast enough.",
+                : "You solved the puzzle, but not fast enough.",
             textAlign: TextAlign.center,
             //style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
           ),
@@ -183,7 +183,7 @@ class _MyCustomFormState extends State<MyCustomForm>
         Padding(
           padding: EdgeInsets.fromLTRB(8, mySpacer * 2, 8, mySpacer * 3),
           child: Text(
-            "You've solved the puzzle! But not fast enough.",
+            "You solved the puzzle, but not fast enough.",
             textAlign: TextAlign.center,
             //    style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
           ),
@@ -246,7 +246,6 @@ class _MyCustomFormState extends State<MyCustomForm>
             }, true)),
       ];
     }
-    sMod.exited = false;
 
     Future<bool> _onBackPressed() async {
       if (!sMod.checkHighScore(sMod.winStreak)) {
