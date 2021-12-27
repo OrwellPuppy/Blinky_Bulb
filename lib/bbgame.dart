@@ -16,7 +16,7 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
       //color of the OS bars
       backgroundColor: Colors.grey[900],
       body: SafeArea(
@@ -39,153 +39,219 @@ class GameScreen extends StatelessWidget {
           double clueButtonWidth = constraints.maxWidth * .2;
           double sidePads = constraints.maxWidth * .02;
 
+          //text seize for 'back button' popup
+          double textSizer =
+              math.min(getHeight(context) * .01, getWidth(context) * .01);
+          double largeFontSize = textSizer * 4 + 6;
+          double mediumFontSize = textSizer * 3 + 6;
+
           //todo: figure out better way to handle provider here
           var rMod = Provider.of<RoundModel>(context, listen: false);
           var tMod = Provider.of<RoundModel>(context, listen: true);
-          return AnimatedContainer(
-              duration: const Duration(milliseconds: 2000),
-              color: (tMod.phase == 'game') ? Colors.yellow : Colors.black,
-              key: Key('main'),
-              curve: Curves.easeInCubic,
-              onEnd: () {
-                if (rMod.phase == 'blastOff') {
-                  rMod.throwTransitionScreen(context);
-                }
-              },
-              child: Container(
-                  color: (tMod.phase == 'game')
-                      ? Colors.black
-                      : Colors.transparent,
-                  child: Column(children: [
-                    AnimatedOpacity(
-                        duration: pieceFade,
-                        curve: pieceCurve,
-                        opacity: tMod.phase == 'game' ? 1 : 0,
-                        child: Container(
-                            color: Colors.black,
-                            height: topSize,
-                            child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: sidePads,
-                                    top: 0,
-                                    right: sidePads,
-                                    bottom: 0),
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      new MyButton(
-                                          exitButtonWidth,
-                                          1,
-                                          'exit',
-                                          topSize * .33,
-                                          0,
-                                          horzPads,
-                                          buttonTopPad,
-                                          buttonTopPad, () {
-                                        rMod.exitButtonAction(context);
-                                      }, false),
-                                      Consumer<RoundModel>(
-                                          builder: (context, upMod, child) {
-                                        return SelectionsCounter(
-                                            topSize,
-                                            selectionsCounterWidth,
-                                            upMod.lights.cBoard.selectionsMax,
-                                            upMod.lights.cBoard.selectionsMax -
-                                                upMod.selectCount,
-                                            buttonTopPad,
-                                            rMod.gameType,
-                                            upMod.timeRemaining);
-                                      }),
-                                      SizedBox(
-                                          height: topSize,
-                                          width: levelLabelWidth,
-                                          child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  rMod.gameType == 'prog'
-                                                      ? 'level'
-                                                      : 'win streak',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontFamily: 'roboto',
-                                                    fontSize: math.max(
-                                                        levelLabelWidth * .16,
-                                                        10),
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.yellow,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${rMod.thisLevelOrStreak}',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontFamily: 'roboto',
-                                                    fontSize: math.min(
-                                                        topSize * .38,
-                                                        levelLabelWidth * .36),
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.yellow,
-                                                  ),
-                                                )
-                                              ])),
-                                    ])))),
-                    Selector<RoundModel, int>(
-                      //TODO: figure out best way to handle selector here..
-                      //trigger rebuild with new version
-                      builder: (context, value, child) =>
-                          MiddleScreen(constraints, middleSize),
-                      selector: (buildContext, myModel) => myModel.version,
+
+          Future<bool> _onWillPop() async {
+            if (rMod.gameType == 'prog') {
+              rMod.exitButtonAction(context);
+              return false;
+            } else {
+              return (await showDialog(
+                    context: context,
+                    builder: (context) => new AlertDialog(
+                      backgroundColor: Colors.grey[300],
+                      title: new Text(
+                        'Exit?',
+                        style: TextStyle(
+                          fontSize: largeFontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      //content: new Text('Do you want to exit an App'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: new Text(
+                            'No',
+                            style: TextStyle(
+                              fontSize: mediumFontSize,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                            //Navigator.of(context).pop(true);
+                            //var rMod = Provider.of<RoundModel>(context, listen: false);
+                            rMod.exitButtonAction(context);
+                            //rMod.exitFunction(context);
+                          },
+                          child: new Text(
+                            'Yes',
+                            style: TextStyle(
+                              fontSize: mediumFontSize,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    AnimatedOpacity(
-                        duration: pieceFade,
-                        curve: pieceCurve,
-                        opacity: tMod.phase == 'game' ? 1 : 0,
-                        child: Container(
-                            color: Colors.black,
-                            //color: Colors.grey[900],
-                            height: bottomSize,
-                            child: Consumer<RoundModel>(
-                                builder: (context, upMod, child) {
-                              return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    BottomButton(
-                                        topSize,
-                                        clueButtonWidth,
-                                        buttonTopPad,
-                                        rMod.triggerClue,
-                                        'clue',
-                                        true,
-                                        upMod.clueA,
-                                        'clueA',
-                                        upMod.clueARelease),
-                                    BottomButton(
-                                        topSize,
-                                        clearButtonWidth,
-                                        buttonTopPad,
-                                        rMod.clearSelections,
-                                        'clear',
-                                        true,
-                                        true,
-                                        'clear',
-                                        true),
-                                    BottomButton(
-                                        topSize,
-                                        clueButtonWidth,
-                                        buttonTopPad,
-                                        rMod.triggerClue,
-                                        'clue',
-                                        true,
-                                        upMod.clueB,
-                                        'clueB',
-                                        upMod.clueBRelease),
-                                  ]);
-                            })))
-                  ])));
+                  )) ??
+                  false;
+            }
+          }
+
+          return new WillPopScope(
+              onWillPop: _onWillPop,
+              child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 2000),
+                  color: (tMod.phase == 'game') ? Colors.yellow : Colors.black,
+                  key: Key('main'),
+                  curve: Curves.easeInCubic,
+                  onEnd: () {
+                    if (rMod.phase == 'blastOff') {
+                      rMod.throwTransitionScreen(context);
+                    }
+                  },
+                  child: Container(
+                      color: (tMod.phase == 'game')
+                          ? Colors.black
+                          : Colors.transparent,
+                      child: Column(children: [
+                        AnimatedOpacity(
+                            duration: pieceFade,
+                            curve: pieceCurve,
+                            opacity: tMod.phase == 'game' ? 1 : 0,
+                            child: Container(
+                                color: Colors.black,
+                                height: topSize,
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: sidePads,
+                                        top: 0,
+                                        right: sidePads,
+                                        bottom: 0),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          new MyButton(
+                                              exitButtonWidth,
+                                              1,
+                                              'exit',
+                                              topSize * .33,
+                                              0,
+                                              horzPads,
+                                              buttonTopPad,
+                                              buttonTopPad, () {
+                                            rMod.exitButtonAction(context);
+                                          }, false),
+                                          Consumer<RoundModel>(
+                                              builder: (context, upMod, child) {
+                                            return SelectionsCounter(
+                                                topSize,
+                                                selectionsCounterWidth,
+                                                upMod.lights.cBoard
+                                                    .selectionsMax,
+                                                upMod.lights.cBoard
+                                                        .selectionsMax -
+                                                    upMod.selectCount,
+                                                buttonTopPad,
+                                                rMod.gameType,
+                                                upMod.timeRemaining);
+                                          }),
+                                          SizedBox(
+                                              height: topSize,
+                                              width: levelLabelWidth,
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      rMod.gameType == 'prog'
+                                                          ? 'level'
+                                                          : 'win streak',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontFamily: 'roboto',
+                                                        fontSize: math.max(
+                                                            levelLabelWidth *
+                                                                .16,
+                                                            10),
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.yellow,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '${rMod.thisLevelOrStreak}',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontFamily: 'roboto',
+                                                        fontSize: math.min(
+                                                            topSize * .38,
+                                                            levelLabelWidth *
+                                                                .36),
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.yellow,
+                                                      ),
+                                                    )
+                                                  ])),
+                                        ])))),
+                        Selector<RoundModel, int>(
+                          //TODO: figure out best way to handle selector here..
+                          //trigger rebuild with new version
+                          builder: (context, value, child) =>
+                              MiddleScreen(constraints, middleSize),
+                          selector: (buildContext, myModel) => myModel.version,
+                        ),
+                        AnimatedOpacity(
+                            duration: pieceFade,
+                            curve: pieceCurve,
+                            opacity: tMod.phase == 'game' ? 1 : 0,
+                            child: Container(
+                                color: Colors.black,
+                                //color: Colors.grey[900],
+                                height: bottomSize,
+                                child: Consumer<RoundModel>(
+                                    builder: (context, upMod, child) {
+                                  return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        BottomButton(
+                                            topSize,
+                                            clueButtonWidth,
+                                            buttonTopPad,
+                                            rMod.triggerClue,
+                                            'clue',
+                                            true,
+                                            upMod.clueA,
+                                            'clueA',
+                                            upMod.clueARelease),
+                                        BottomButton(
+                                            topSize,
+                                            clearButtonWidth,
+                                            buttonTopPad,
+                                            rMod.clearSelections,
+                                            'clear',
+                                            true,
+                                            true,
+                                            'clear',
+                                            true),
+                                        BottomButton(
+                                            topSize,
+                                            clueButtonWidth,
+                                            buttonTopPad,
+                                            rMod.triggerClue,
+                                            'clue',
+                                            true,
+                                            upMod.clueB,
+                                            'clueB',
+                                            upMod.clueBRelease),
+                                      ]);
+                                })))
+                      ]))));
         }),
       ),
     );
@@ -214,9 +280,9 @@ class SelectionsCounter extends StatelessWidget {
       height: clockHeight,
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
-        color: Colors.grey[900],
+        color: Colors.black, //Colors.grey[900],
         border: Border.all(
-          color: Colors.white,
+          color: Colors.black, //Colors.white,
         ),
       ),
       child: Center(
@@ -248,10 +314,9 @@ class SelectionsCounter extends StatelessWidget {
         height: circleSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: selectionsCurrent >= i ? Colors.greenAccent : Colors.grey[900],
+          color: selectionsCurrent >= i ? Colors.greenAccent : Colors.black,
           border: Border.all(
-            color:
-                selectionsCurrent >= i ? Colors.greenAccent : Colors.blueGrey,
+            color: Colors.greenAccent,
           ),
         ),
       ));
@@ -339,26 +404,28 @@ class MiddleScreen extends StatelessWidget {
       myWidget = SizedBox(
           height: middleSize,
           child: PolygonGrid(
-              rMod.lights.cBoard.rows,
-              rMod.lights.cBoard.columns,
-              constraints.maxWidth,
-              middleSize,
-              rMod.lights.cBoard.cornerStart,
-              0.03,
-              rMod.lights.cBoard.gameBoard,
-              gMod.phase));
+            rMod.lights.cBoard.rows,
+            rMod.lights.cBoard.columns,
+            constraints.maxWidth,
+            middleSize,
+            rMod.lights.cBoard.cornerStart,
+            0.03,
+            rMod.lights.cBoard.gameBoard,
+            gMod.phase,
+          ));
     } else if (!rMod.lights.cBoard.isHexBoard) {
       myWidget = SizedBox(
           height: middleSize,
           child: SquareGrid(
-              rMod.lights.cBoard.rows,
-              rMod.lights.cBoard.columns,
-              constraints.maxWidth,
-              middleSize,
-              rMod.lights.cBoard.cornerStart,
-              0.03,
-              rMod.lights.cBoard.gameBoard,
-              gMod.phase));
+            rMod.lights.cBoard.rows,
+            rMod.lights.cBoard.columns,
+            constraints.maxWidth,
+            middleSize,
+            rMod.lights.cBoard.cornerStart,
+            0.03,
+            rMod.lights.cBoard.gameBoard,
+            gMod.phase,
+          ));
     }
     return myWidget;
   }
@@ -696,16 +763,34 @@ class Bulb extends StatelessWidget {
                   rMod.gameOver(context);
                 }
               },
-              child: Container(
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 175),
                 width: calcSize,
                 height: calcSize,
                 decoration: new BoxDecoration(
                   shape: BoxShape.circle,
-                  color: rMod.lights.lightState[row][col]
+                  /*color: rMod.lights.lightState[row][col]
                       ? rMod.onColor
                       : rMod.lights.cBoard.gameBoard[row][col].type == 2
                           ? Colors.transparent
                           : rMod.offColor,
+                   */
+                  gradient: RadialGradient(
+                    colors: rMod.lights.lightState[row][col]
+                        ? [
+                            rMod.onColorGrad,
+                            rMod.onColor,
+                          ]
+                        : rMod.lights.cBoard.gameBoard[row][col].type == 2
+                            ? [
+                                Colors.transparent,
+                                Colors.transparent,
+                              ]
+                            : [
+                                rMod.offColorGrad,
+                                rMod.offColor,
+                              ],
+                  ),
                   border: Border.all(
                     color: rMod.lights.cBoard.gameBoard[row][col].type == 2
                         ? Colors.transparent
@@ -925,7 +1010,9 @@ class RoundModel extends ChangeNotifier {
   List<Node> clueList = []; //solution list only used to generate clues
   int selectCount = 0; //count of selected nodes
   Color onColor = Colors.yellow;
-  Color offColor = Colors.grey[600];
+  Color onColorGrad = Colors.white;
+  Color offColor = Colors.grey[700];
+  Color offColorGrad = Colors.grey[600];
   int version = 0;
   String gameType;
   Timer timer;
@@ -935,9 +1022,11 @@ class RoundModel extends ChangeNotifier {
   List<List<double>> topBlastDist;
   String phase = 'game'; //what phase the game is in: start/game/blastOff
   bool won = false; //whether the round was won or lost
+  //BuildContext initialContext;
 
   RoundModel(BuildContext context, this.gameType, this.thisLevelOrStreak) {
     print('roundModel Built');
+    //initialContext = context;
     CompleteRound cr;
     //start up the games based on gameType
     if (gameType == 'roul') {
@@ -964,6 +1053,7 @@ class RoundModel extends ChangeNotifier {
   @override
   void dispose() {
     timer?.cancel();
+    //exitButtonAction(initialContext);
     print('round model disposed.');
     super.dispose();
   }
@@ -1402,8 +1492,18 @@ class RoundModel extends ChangeNotifier {
 }
 //*****************
 
-//Next: work out logic on the transition score screen..
-//figure out how to deal with pressing back button to avoid a loss in roulette
+//make the clue button unavailable color match that of the submit button
+
+//convert all RawMaterialButtons to non-obsolete version
+//--make button styles uniform, including capitalization, color, etc
+//--go through and make all colors global or figure out theme colors?
+//--on win dialogue, make "save exit" smaller type button?
+
+//timer aesthetics
+//fix all the scope issues of provider
+
+//add the back-button question to ScramblyWord
+//upload scrambly word to github
 
 //re: round generation, maybe make it choose new solution nodes if none are arrows and a fair number of arrows exists
 //way to check a saved round for multiple solutions using existing code..

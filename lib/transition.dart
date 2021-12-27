@@ -9,12 +9,9 @@ import 'package:blinky_bulb/bbscore.dart';
 import 'package:blinky_bulb/globals.dart';
 
 //import 'dart:ui';
-//import 'dart:math';
+import 'dart:math' as math;
 
 class MyCustomForm extends StatefulWidget {
-  final double buttonFontSize = 14; //TODO: calculate this
-  final double smallButtonFontSize = 12; //TODO: calculate this
-
   const MyCustomForm();
 
   @override
@@ -26,8 +23,8 @@ class _MyCustomFormState extends State<MyCustomForm>
   AnimationController aniController;
   Animation<double> myAnimation;
   bool isEnabled = false;
-  Color currentButtonColor = Colors.grey;
-  Color currentButtonTextColor = Colors.deepOrange;
+  Color currentButtonColor = Colors.grey[500];
+  Color currentButtonTextColor = Colors.grey[600];
 
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
@@ -67,66 +64,79 @@ class _MyCustomFormState extends State<MyCustomForm>
   @override
   Widget build(BuildContext context) {
     double mySpacer = getHeight(context) * .01;
+    double textSizer =
+        math.min(getHeight(context) * .01, getWidth(context) * .01);
+    double myHorzSpacer = getWidth(context) * .01;
+
+    //font size calcs
+    double largeFontSize = textSizer * 4 + 6;
+    double mediumFontSize = textSizer * 3 + 6;
+    double smallFontSize = textSizer * 2 + 6;
+
     List<Widget> highScoreContent = [];
     var sMod = Provider.of<ScoreModel>(context, listen: false);
 
     void scoreButtonEvent() {
       if (isEnabled) {
+        //set scoreboard name variable to myController.text
         sMod.updateHighScore(myController.text);
         myController.text = ''; //attempt to fix saving-text issue
-        //set scoreboard name variable to myController.text
-        //Navigator.of(context).pop();
-        //Navigator.of(context).pop();
-        //Navigator.pop(context);
-        //Navigator.pushNamed(context, '/highScores');
         Navigator.pushReplacementNamed(context, '/highScores');
       }
     }
 
+    //possibilities:
+    // forfeit/exit/lose + no high score: no msg
+    // forfeit/exit + high score: forf + enter name msg
+    // lose + high score: lose + name msg
+    // win: save or continue msg
     if (sMod.winStreak == 0 && sMod.checkHighScore(sMod.pendingLastWinStreak)) {
       //if round is lost but a high score is set
       highScoreContent = <Widget>[
         Padding(
-          padding: EdgeInsets.fromLTRB(8, mySpacer * 2, 8, mySpacer * 3),
+          padding: EdgeInsets.fromLTRB(
+              myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 1),
           child: Text(
-            sMod.exited
-                ? "You've forfeited."
-                : "You solved the puzzle, but not fast enough.",
+            "YOU SET A HIGH SCORE!",
             textAlign: TextAlign.center,
-            //style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
+            style: TextStyle(
+              fontSize: largeFontSize,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(8, mySpacer * 2, 8, mySpacer * 3),
+            padding: EdgeInsets.fromLTRB(
+                myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
+            child: Text(
+              sMod.exited
+                  ? "Forfeited. Final win streak: ${sMod.pendingLastWinStreak}"
+                  : "Out of time. Final win streak: ${sMod.pendingLastWinStreak}",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: smallFontSize,
+              ),
+            )),
+        Padding(
+          padding:
+              EdgeInsets.fromLTRB(myHorzSpacer, mySpacer * 1, myHorzSpacer, 0),
           child: Text(
-            "Final win streak: ${sMod.pendingLastWinStreak}",
+            "Enter name for scoreboard:",
             textAlign: TextAlign.center,
-            //style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
+            style: TextStyle(
+              fontSize: smallFontSize,
+            ),
+            //    style: myStyle(smallButtonFontSize, 'popupMenu')
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(8, mySpacer * 2, 8, mySpacer * 3),
-          child: Text(
-            "YOU'VE SET A HIGH SCORE!",
-            textAlign: TextAlign.center,
-            //style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
-          child: Text(
-            "Enter a name for the scoreboard:",
-            textAlign: TextAlign.center,
-            //    style: myStyle(widget.smallButtonFontSize, 'popupMenu')
-          ),
-        ),
-        Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, mySpacer),
+            padding:
+                EdgeInsets.fromLTRB(myHorzSpacer * 2, 0, myHorzSpacer * 2, 0),
             child: TextField(
               //style: myStyle(widget.buttonFontSize, 'popupMenuEntryText'),
               controller: myController,
               autocorrect: false,
-              cursorColor: Colors.yellowAccent, //cursorColor,
+              cursorColor: Colors.grey[600], //cursorColor,
               enableSuggestions: false,
               keyboardAppearance: Brightness.dark,
               maxLines: 1,
@@ -135,15 +145,15 @@ class _MyCustomFormState extends State<MyCustomForm>
                   isEnabled = true;
                   setState(() {
                     currentButtonColor = Colors.blue; //myButtonColor;
-                    currentButtonTextColor =
-                        Colors.deepPurple; // buttonTextColor;
+                    currentButtonTextColor = Colors.white; // buttonTextColor;
                   });
                 } else {
                   isEnabled = false;
                   setState(() {
-                    currentButtonColor = Colors.blueGrey; //disabledButtonColor;
+                    currentButtonColor =
+                        Colors.grey[500]; //disabledButtonColor;
                     currentButtonTextColor =
-                        Colors.brown; // disabledButtonTextColor;
+                        Colors.grey[600]; // disabledButtonTextColor;
                   });
                 }
               },
@@ -154,7 +164,8 @@ class _MyCustomFormState extends State<MyCustomForm>
               maxLength: 10,
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(8, mySpacer * 4, 8, mySpacer * 2),
+            padding: EdgeInsets.fromLTRB(
+                myHorzSpacer * 2, mySpacer * 4, myHorzSpacer * 2, mySpacer * 2),
             child: RawMaterialButton(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 fillColor: currentButtonColor,
@@ -165,11 +176,11 @@ class _MyCustomFormState extends State<MyCustomForm>
                 onPressed: isEnabled ? scoreButtonEvent : null,
                 child: Center(
                   child: Text(
-                    "SUBMIT",
+                    "submit",
                     style: TextStyle(
                       fontFamily: 'roboto',
                       fontWeight: FontWeight.w600,
-                      fontSize: widget.smallButtonFontSize,
+                      fontSize: mediumFontSize,
                       //gMod.buttonFontSize,
                       color: currentButtonTextColor,
                     ), //need to somehow pass buttonfontsize
@@ -181,33 +192,55 @@ class _MyCustomFormState extends State<MyCustomForm>
       //if round is lost and a high score isn't set
       highScoreContent = <Widget>[
         Padding(
-          padding: EdgeInsets.fromLTRB(8, mySpacer * 2, 8, mySpacer * 3),
+          padding: EdgeInsets.fromLTRB(
+              myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 1),
+          child: Text(
+            "YOU LOSE",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: largeFontSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+              myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
           child: Text(
             "You solved the puzzle, but not fast enough.",
             textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: smallFontSize,
+            ),
             //    style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
-          child: Text(
-            "Final win streak: ${sMod.pendingLastWinStreak}",
-            //textAlign: TextAlign.center,
-            //    style: myStyle(widget.buttonFontSize, 'popupMenu')
-          ),
+          padding: EdgeInsets.fromLTRB(
+              myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
+          child: Text("final win streak: ${sMod.pendingLastWinStreak}",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: smallFontSize,
+              )
+
+              //    style: myStyle(widget.buttonFontSize, 'popupMenu')
+              ),
         ),
         Padding(
-            padding: EdgeInsets.fromLTRB(8, mySpacer * 4, 8, mySpacer),
-            child: MyButton(20, 20, 'RETURN TO MENU',
-                widget.smallButtonFontSize, 2, 2, 2, 2, () {
+            padding: EdgeInsets.fromLTRB(
+                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+            child: MyButton(
+                0, mySpacer * 4, 'exit to menu', mediumFontSize, 0, 0, 0, 0,
+                () {
               Navigator.of(context).pop();
               //Navigator.pop(context);
             }, true)),
         Padding(
-            padding: EdgeInsets.fromLTRB(8, mySpacer * 4, 8, mySpacer),
+            padding: EdgeInsets.fromLTRB(
+                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
             child: MyButton(
-                20, 20, 'PLAY AGAIN', widget.smallButtonFontSize, 2, 2, 2, 2,
-                () {
+                0, mySpacer * 4, 'play again', mediumFontSize, 0, 0, 0, 0, () {
               Navigator.pushReplacementNamed(context, '/roulette');
             }, true)),
       ];
@@ -215,42 +248,54 @@ class _MyCustomFormState extends State<MyCustomForm>
       //if round is won
       highScoreContent = <Widget>[
         Padding(
-          padding: EdgeInsets.fromLTRB(8, mySpacer * 2, 8, mySpacer * 3),
+          padding: EdgeInsets.fromLTRB(
+              myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 1),
           child: Text(
-            "You've solved the puzzle!",
+            "YOU WIN",
             textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: largeFontSize,
+              fontWeight: FontWeight.bold,
+            ),
             //    style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
-          child: Text(
-            "Current win streak: ${sMod.winStreak}",
-            //textAlign: TextAlign.center,
-            //    style: myStyle(widget.buttonFontSize, 'popupMenu')
-          ),
+          padding: EdgeInsets.fromLTRB(
+              myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
+          child: Text("win streak: ${sMod.winStreak}",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: smallFontSize,
+              )
+              //    style: myStyle(widget.buttonFontSize, 'popupMenu')
+              ),
         ),
         Padding(
-            padding: EdgeInsets.fromLTRB(8, mySpacer * 4, 8, mySpacer),
+            padding: EdgeInsets.fromLTRB(
+                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
             child: MyButton(
-                20, 20, 'NEXT ROUND', widget.smallButtonFontSize, 2, 2, 2, 2,
+                0, mySpacer * 4, 'save and exit', mediumFontSize, 0, 0, 0, 0,
+                () {
+              Navigator.of(context).pop();
+            }, true)),
+        Padding(
+            padding: EdgeInsets.fromLTRB(
+                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+            child: MyButton(
+                0, mySpacer * 4, 'play next round', mediumFontSize, 0, 0, 0, 0,
                 () {
               Navigator.pushReplacementNamed(context, '/roulette');
               //Navigator.pop(context);
-            }, true)),
-        Padding(
-            padding: EdgeInsets.fromLTRB(8, mySpacer * 4, 8, mySpacer),
-            child: MyButton(20, 20, 'SAVE AND RETURN TO MENU',
-                widget.smallButtonFontSize, 2, 2, 2, 2, () {
-              Navigator.of(context).pop();
             }, true)),
       ];
     }
 
     Future<bool> _onBackPressed() async {
       if (!sMod.checkHighScore(sMod.winStreak)) {
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
+        //Navigator.of(context).pop();
+        //Navigator.of(context).pop();
+        Navigator.of(context).pop(false);
       }
       return false;
     }

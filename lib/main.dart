@@ -179,7 +179,7 @@ class MenuScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'current win streak: ${sMod.winStreak}',
+                                'win streak: ${sMod.winStreak}',
                                 style: TextStyle(
                                   fontFamily: 'roboto',
                                   fontSize: buttonFontSize * .75,
