@@ -21,12 +21,27 @@ void main() {
         title: 'Blinky Bulb',
         theme: ThemeData(
           primaryColor: Colors.pink,
+
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
+            textStyle: TextStyle(fontFamily: 'roboto'),
             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(80)),
-            primary: Colors.lightBlue, // background color
+            primary: shadeA, // background color
+            onPrimary: Colors.white,
+            //textStyle:TextStyle(fontSize: 20, fontStyle: FontStyle.italic)
+          )),
+          textButtonTheme: TextButtonThemeData(
+              style: ElevatedButton.styleFrom(
+            textStyle: TextStyle(fontFamily: 'roboto'),
+            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(80),
+                side: BorderSide(width: 1, color: shadeA)),
+
+            //primary: Colors.deepOrange, // background color
+            onPrimary: shadeA,
             //textStyle:TextStyle(fontSize: 20, fontStyle: FontStyle.italic)
           )),
           //primarySwatch: Colors.blue,
@@ -92,7 +107,7 @@ class MenuScreen extends StatelessWidget {
                 buttonWidth = min(
                     constraints.maxWidth * .8, constraints.maxWidth * .5 + 200);
                 buttonTopPad = buttonHeight / 6;
-                buttonFontSize = buttonHeight * .35;
+                buttonFontSize = buttonHeight * .45;
                 buttonLeftPad = (constraints.maxWidth - buttonWidth) / 2;
               } else {
                 //horizontal
@@ -108,7 +123,7 @@ class MenuScreen extends StatelessWidget {
                         .8);
                 buttonTopPad = buttonHeight / 8;
                 buttonLeftPad = buttonWidth * .04;
-                buttonFontSize = buttonHeight * .35;
+                buttonFontSize = buttonHeight * .4;
               }
 
               Widget playLabel = Padding(
@@ -116,45 +131,53 @@ class MenuScreen extends StatelessWidget {
                     top: buttonTopPad * 2,
                     bottom: buttonTopPad,
                   ),
-                  child: Text('- play -'));
+                  child: Text('- play -',
+                      style: TextStyle(
+                          fontFamily: 'roboto',
+                          fontSize: buttonFontSize * .55,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.yellow)));
               Widget infoLabel = Padding(
                   padding: EdgeInsets.only(
                     top: buttonTopPad * 2,
                     bottom: 0,
                   ),
-                  child: Text('- info -'));
+                  child: Text('- info -',
+                      style: TextStyle(
+                          fontFamily: 'roboto',
+                          fontSize: buttonFontSize * .55,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black)));
 
               Widget progressionButton = new ElevatedButton(
                   onPressed: () {
                     print('progression pressed');
                     Navigator.pushNamed(context, '/progression');
                   },
-                  child: SizedBox(
-                      width: buttonWidth,
-                      height: buttonHeight,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'PROGRESSION',
-                            style: TextStyle(
-                              fontFamily: 'roboto',
-                              fontSize: buttonFontSize,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            'level: ${sMod.progressionLevel}',
-                            style: TextStyle(
-                              fontFamily: 'roboto',
-                              fontSize: buttonFontSize * .75,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
-                      )));
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(buttonWidth, buttonHeight),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'PROGRESSION',
+                        style: TextStyle(
+                          fontSize: buttonFontSize,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'level: ${sMod.progressionLevel}',
+                        style: TextStyle(
+                          fontSize: buttonFontSize * .55,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey[350],
+                        ),
+                      )
+                    ],
+                  ));
 
               Widget rouletteButton = new Padding(
                   padding: EdgeInsets.only(top: buttonTopPad),
@@ -163,56 +186,76 @@ class MenuScreen extends StatelessWidget {
                         print('roulette pressed');
                         Navigator.pushNamed(context, '/roulette');
                       },
-                      child: SizedBox(
-                          width: buttonWidth,
-                          height: buttonHeight,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'ROULETTE',
-                                style: TextStyle(
-                                  fontFamily: 'roboto',
-                                  fontSize: buttonFontSize,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'win streak: ${sMod.winStreak}',
-                                style: TextStyle(
-                                  fontFamily: 'roboto',
-                                  fontSize: buttonFontSize * .75,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              )
-                            ],
-                          ))));
-              Widget scoresButton = new MyButton(
-                  buttonWidth,
-                  buttonHeight,
-                  'High Scores',
-                  buttonFontSize,
-                  buttonLeftPad,
-                  buttonLeftPad,
-                  buttonTopPad,
-                  0, () {
-                print('High Scores pressed');
-                Navigator.pushNamed(context, '/highScores');
-              }, false);
-              Widget howToButton = new MyButton(
-                  buttonWidth,
-                  buttonHeight,
-                  'How To Play CLEAR DATA',
-                  buttonFontSize,
-                  buttonLeftPad,
-                  buttonLeftPad,
-                  buttonTopPad,
-                  0, () {
-                print('HowToPlay press');
-                Navigator.pushNamed(context, '/howToPlay');
-              }, false);
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(buttonWidth, buttonHeight),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'ROULETTE',
+                            style: TextStyle(
+                              fontFamily: 'roboto',
+                              fontSize: buttonFontSize,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'win streak: ${sMod.winStreak}',
+                            style: TextStyle(
+                              fontFamily: 'roboto',
+                              fontSize: buttonFontSize * .55,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey[350],
+                            ),
+                          )
+                        ],
+                      )));
+
+              Widget howToButton = new Padding(
+                  padding: EdgeInsets.only(
+                    top: 0,
+                    left: buttonLeftPad,
+                    right: buttonLeftPad,
+                    bottom: buttonTopPad,
+                  ),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(buttonWidth, buttonHeight / 1.35),
+                      textStyle: TextStyle(
+                        fontSize: buttonFontSize * .75,
+                        //fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {
+                      print('HowToPlay press');
+                      Navigator.pushNamed(context, '/howToPlay');
+                    },
+                    child: const Text('How To Play'),
+                  ));
+
+              Widget scoresButton = new Padding(
+                  padding: EdgeInsets.only(
+                    top: 0,
+                    left: buttonLeftPad,
+                    right: buttonLeftPad,
+                    bottom: 0,
+                  ),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: Size(buttonWidth, buttonHeight / 1.35),
+                      textStyle: TextStyle(
+                        fontSize: buttonFontSize * .75,
+                        //    fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {
+                      print('High Scores pressed');
+                      Navigator.pushNamed(context, '/highScores');
+                    },
+                    child: const Text('High Scores'),
+                  ));
 
               Widget myTitle = Center(
                   child: Container(
@@ -224,7 +267,7 @@ class MenuScreen extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'roboto',
                           fontSize: titleFontSize,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w900,
                           color: Colors.yellow,
                         ),
                       )));
@@ -413,11 +456,11 @@ class ScoreScreen extends StatelessWidget {
           //Navigator.pushNamed(context, '/second');
         },
         label: Text(
-          'RETURN TO MENU',
+          'Return To Menu',
           //style: myStyle(buttonFontSize, 'buttonStyle')),
         ),
-        icon: Icon(Icons.arrow_back, color: Colors.brown),
-        backgroundColor: Colors.lightBlue,
+        icon: Icon(Icons.arrow_back, color: Colors.white),
+        backgroundColor: shadeA,
       ),
     ));
   }

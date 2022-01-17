@@ -100,6 +100,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             "YOU SET A HIGH SCORE!",
             textAlign: TextAlign.center,
             style: TextStyle(
+              color: Colors.grey[200],
               fontSize: largeFontSize,
               fontWeight: FontWeight.bold,
             ),
@@ -114,6 +115,7 @@ class _MyCustomFormState extends State<MyCustomForm>
                   : "Out of time. Final win streak: ${sMod.pendingLastWinStreak}",
               textAlign: TextAlign.center,
               style: TextStyle(
+                color: Colors.grey[200],
                 fontSize: smallFontSize,
               ),
             )),
@@ -124,6 +126,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             "Enter name for scoreboard:",
             textAlign: TextAlign.center,
             style: TextStyle(
+              color: Colors.grey[200],
               fontSize: smallFontSize,
             ),
             //    style: myStyle(smallButtonFontSize, 'popupMenu')
@@ -131,9 +134,19 @@ class _MyCustomFormState extends State<MyCustomForm>
         ),
         Padding(
             padding:
-                EdgeInsets.fromLTRB(myHorzSpacer * 2, 0, myHorzSpacer * 2, 0),
+                EdgeInsets.fromLTRB(myHorzSpacer * 2, 4, myHorzSpacer * 2, 0),
             child: TextField(
-              //style: myStyle(widget.buttonFontSize, 'popupMenuEntryText'),
+              style: TextStyle(color: Colors.grey[200]),
+              decoration: InputDecoration(
+                counterStyle: TextStyle(color: Colors.grey[200]),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 1.0,
+                    color: shadeA,
+                  ),
+                ),
+              ),
+
               controller: myController,
               autocorrect: false,
               cursorColor: Colors.grey[600], //cursorColor,
@@ -144,16 +157,16 @@ class _MyCustomFormState extends State<MyCustomForm>
                 if (myController.text.length > 0) {
                   isEnabled = true;
                   setState(() {
-                    currentButtonColor = Colors.blue; //myButtonColor;
-                    currentButtonTextColor = Colors.white; // buttonTextColor;
+                    currentButtonColor = shadeA;
+                    currentButtonTextColor = Colors.white;
                   });
                 } else {
                   isEnabled = false;
                   setState(() {
                     currentButtonColor =
-                        Colors.grey[500]; //disabledButtonColor;
+                        Colors.grey[800]; //disabledButtonColor;
                     currentButtonTextColor =
-                        Colors.grey[600]; // disabledButtonTextColor;
+                        Colors.grey[700]; // disabledButtonTextColor;
                   });
                 }
               },
@@ -172,11 +185,10 @@ class _MyCustomFormState extends State<MyCustomForm>
                 textStyle: TextStyle(color: Colors.lightGreen),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(80)),
-                splashColor: Colors.lightBlue, //myButtonAccent,
                 onPressed: isEnabled ? scoreButtonEvent : null,
                 child: Center(
                   child: Text(
-                    "submit",
+                    "Submit",
                     style: TextStyle(
                       fontFamily: 'roboto',
                       fontWeight: FontWeight.w600,
@@ -222,27 +234,34 @@ class _MyCustomFormState extends State<MyCustomForm>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: smallFontSize,
-              )
-
-              //    style: myStyle(widget.buttonFontSize, 'popupMenu')
-              ),
+              )),
         ),
-        Padding(
-            padding: EdgeInsets.fromLTRB(
-                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
-            child: MyButton(
-                0, mySpacer * 4, 'exit to menu', mediumFontSize, 0, 0, 0, 0,
-                () {
-              Navigator.of(context).pop();
-              //Navigator.pop(context);
-            }, true)),
-        Padding(
-            padding: EdgeInsets.fromLTRB(
-                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
-            child: MyButton(
-                0, mySpacer * 4, 'play again', mediumFontSize, 0, 0, 0, 0, () {
-              Navigator.pushReplacementNamed(context, '/roulette');
-            }, true)),
+        TextButton(
+          style: TextButton.styleFrom(
+              padding: EdgeInsets.fromLTRB(
+                  myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+              minimumSize: Size.fromHeight(mySpacer * 4),
+              textStyle: TextStyle(
+                  fontSize: mediumFontSize, fontWeight: FontWeight.w700)),
+          onPressed: () {
+            Navigator.of(context).pop();
+            //Navigator.pop(context);
+          },
+          child: Text('Exit To Menu'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.fromLTRB(
+                  myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+              elevation: 0,
+              minimumSize: Size.fromHeight(mySpacer * 4),
+              textStyle: TextStyle(
+                  fontSize: mediumFontSize, fontWeight: FontWeight.w700)),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/roulette');
+          },
+          child: Text('Play Again'),
+        ),
       ];
     } else {
       //if round is won
@@ -251,10 +270,10 @@ class _MyCustomFormState extends State<MyCustomForm>
           padding: EdgeInsets.fromLTRB(
               myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 1),
           child: Text(
-            "YOU WIN",
+            "YOU WIN!",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: largeFontSize,
+              fontSize: largeFontSize * 1.1,
               fontWeight: FontWeight.bold,
             ),
             //    style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
@@ -271,23 +290,31 @@ class _MyCustomFormState extends State<MyCustomForm>
               //    style: myStyle(widget.buttonFontSize, 'popupMenu')
               ),
         ),
-        Padding(
+        TextButton(
+          style: TextButton.styleFrom(
+            minimumSize: Size.fromHeight(mySpacer * 4),
+            textStyle: TextStyle(fontSize: mediumFontSize),
             padding: EdgeInsets.fromLTRB(
                 myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
-            child: MyButton(
-                0, mySpacer * 4, 'save and exit', mediumFontSize, 0, 0, 0, 0,
-                () {
-              Navigator.of(context).pop();
-            }, true)),
-        Padding(
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Save And Exit'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size.fromHeight(mySpacer * 4),
+            textStyle: TextStyle(fontSize: mediumFontSize),
             padding: EdgeInsets.fromLTRB(
                 myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
-            child: MyButton(
-                0, mySpacer * 4, 'play next round', mediumFontSize, 0, 0, 0, 0,
-                () {
-              Navigator.pushReplacementNamed(context, '/roulette');
-              //Navigator.pop(context);
-            }, true)),
+          ),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/roulette');
+            //Navigator.pop(context);
+          },
+          child: Text('Play Next Round'),
+        ),
       ];
     }
 
@@ -313,8 +340,7 @@ class _MyCustomFormState extends State<MyCustomForm>
                             opacity: myAnimation,
                             child: Container(
                                 decoration: ShapeDecoration(
-                                    color: Colors
-                                        .white70, //customFormBackgroundColor,
+                                    color: Colors.grey[900],
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(15.0))),

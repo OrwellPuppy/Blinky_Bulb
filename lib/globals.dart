@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:blinky_bulb/complete_board.dart';
 
+//colors
+Color shadeA = Colors.deepOrange; //Colors.lightBlueAccent;
+
 //animation speed settings
 const bulbDuration = const Duration(milliseconds: 1500);
 const startDuration = const Duration(milliseconds: 650);
@@ -115,7 +118,7 @@ class NodeType {
     }
   }
 
-//todo: QQ nodeType
+//print nodeType
   /*
   String getCompact() {
     if (type == 4) {
@@ -469,7 +472,7 @@ class CompleteRound {
     print("*******************");
   }
 
-//todo: QQ CompleteRound (top level)
+//CompleteRound (top level)
   void printCompact() {
     print("//*******************");
     //cBoard.printValues();
@@ -492,7 +495,7 @@ String nodeListValues(List<Node> nList) {
   return values;
 }
 
-//todo: QQ node list for solution and banned nodes
+//node list for solution and banned nodes
 String compactNodeListValues(List<Node> nList) {
   String values = '[';
   nList.forEach((element) => values += '${element.getCompact()}');

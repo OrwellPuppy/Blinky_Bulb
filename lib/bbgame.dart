@@ -39,7 +39,7 @@ class GameScreen extends StatelessWidget {
           double clueButtonWidth = constraints.maxWidth * .2;
           double sidePads = constraints.maxWidth * .02;
 
-          //text seize for 'back button' popup
+          //text size for 'back button' popup
           double textSizer =
               math.min(getHeight(context) * .01, getWidth(context) * .01);
           double largeFontSize = textSizer * 4 + 6;
@@ -132,17 +132,26 @@ class GameScreen extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          new MyButton(
-                                              exitButtonWidth,
-                                              1,
-                                              'exit',
-                                              topSize * .33,
-                                              0,
-                                              horzPads,
-                                              buttonTopPad,
-                                              buttonTopPad, () {
-                                            rMod.exitButtonAction(context);
-                                          }, false),
+                                          new Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 0,
+                                                  top: buttonTopPad,
+                                                  right: horzPads,
+                                                  bottom: buttonTopPad),
+                                              child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    minimumSize: Size.fromWidth(
+                                                        exitButtonWidth),
+                                                    textStyle: TextStyle(
+                                                        fontSize: topSize / 4,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                  onPressed: () {
+                                                    rMod.exitButtonAction(
+                                                        context);
+                                                  },
+                                                  child: Text('Exit'))),
                                           Consumer<RoundModel>(
                                               builder: (context, upMod, child) {
                                             return SelectionsCounter(
@@ -220,35 +229,35 @@ class GameScreen extends StatelessWidget {
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         BottomButton(
-                                            topSize,
                                             clueButtonWidth,
                                             buttonTopPad,
                                             rMod.triggerClue,
-                                            'clue',
+                                            'Clue',
                                             true,
                                             upMod.clueA,
                                             'clueA',
-                                            upMod.clueARelease),
+                                            upMod.clueARelease,
+                                            topSize / 4),
                                         BottomButton(
-                                            topSize,
                                             clearButtonWidth,
                                             buttonTopPad,
                                             rMod.clearSelections,
-                                            'clear',
+                                            'Clear',
                                             true,
                                             true,
                                             'clear',
-                                            true),
+                                            true,
+                                            topSize / 4),
                                         BottomButton(
-                                            topSize,
                                             clueButtonWidth,
                                             buttonTopPad,
                                             rMod.triggerClue,
-                                            'clue',
+                                            'Clue',
                                             true,
                                             upMod.clueB,
                                             'clueB',
-                                            upMod.clueBRelease),
+                                            upMod.clueBRelease,
+                                            topSize / 4),
                                       ]);
                                 })))
                       ]))));
@@ -342,7 +351,6 @@ class SelectionsCounter extends StatelessWidget {
 }
 
 class BottomButton extends StatelessWidget {
-  final double height;
   final double width;
   final double buttPad;
   final Function runFunction;
@@ -353,9 +361,18 @@ class BottomButton extends StatelessWidget {
   final bool isEnabled;
   final String buttonID;
   final bool released;
+  final double bFontSize;
   static const double spacerPercent = 0.1; //percent of diameter
-  BottomButton(this.height, this.width, this.buttPad, this.runFunction,
-      this.bText, this.isVisible, this.isEnabled, this.buttonID, this.released);
+  BottomButton(
+      this.width,
+      this.buttPad,
+      this.runFunction,
+      this.bText,
+      this.isVisible,
+      this.isEnabled,
+      this.buttonID,
+      this.released,
+      this.bFontSize);
   @override
   Widget build(BuildContext context) {
     Widget customButton = Padding(
@@ -365,24 +382,22 @@ class BottomButton extends StatelessWidget {
           opacity: released ? 1 : 0,
           duration: const Duration(milliseconds: 600),
           child: ElevatedButton(
-              onPressed: isEnabled
-                  ? () {
-                      runFunction(buttonID);
-                    }
-                  : null,
-              child: SizedBox(
-                  width: width,
-                  child: Center(
-                    child: Text(
-                      bText,
-                      style: TextStyle(
-                        fontFamily: 'roboto',
-                        fontSize: height / 4,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )))),
+            style: TextButton.styleFrom(
+                minimumSize: Size.fromWidth(width),
+                textStyle: TextStyle(fontSize: bFontSize)),
+            onPressed: isEnabled
+                ? () {
+                    runFunction(buttonID);
+                  }
+                : null,
+            child: Text(
+              bText,
+              style: TextStyle(
+                fontFamily: 'roboto',
+                color: Colors.white,
+              ),
+            ),
+          )),
     );
     return customButton;
   }
@@ -1492,12 +1507,10 @@ class RoundModel extends ChangeNotifier {
 }
 //*****************
 
-//make the clue button unavailable color match that of the submit button
+//still need to fix/revise the Submit button for high scores to a ElevatedButton
+//make the clue button unavailable outline color still visible/standardized
 
-//convert all RawMaterialButtons to non-obsolete version
-//--make button styles uniform, including capitalization, color, etc
-//--go through and make all colors global or figure out theme colors?
-//--on win dialogue, make "save exit" smaller type button?
+//on the main menu, make the win streak and level labels only show up if they're not =0
 
 //timer aesthetics
 //fix all the scope issues of provider
