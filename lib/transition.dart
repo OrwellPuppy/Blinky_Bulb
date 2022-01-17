@@ -63,15 +63,17 @@ class _MyCustomFormState extends State<MyCustomForm>
 
   @override
   Widget build(BuildContext context) {
+    double bWidth = getWidth(context) * .8;
+
     double mySpacer = getHeight(context) * .01;
     double textSizer =
         math.min(getHeight(context) * .01, getWidth(context) * .01);
     double myHorzSpacer = getWidth(context) * .01;
 
     //font size calcs
-    double largeFontSize = textSizer * 4 + 6;
-    double mediumFontSize = textSizer * 3 + 6;
-    double smallFontSize = textSizer * 2 + 6;
+    double largeFontSize = (textSizer + 10) * 2.0;
+    double mediumFontSize = (textSizer + 10) * 1.2;
+    double smallFontSize = (textSizer + 10) * 1.2;
 
     List<Widget> highScoreContent = [];
     var sMod = Provider.of<ScoreModel>(context, listen: false);
@@ -138,6 +140,12 @@ class _MyCustomFormState extends State<MyCustomForm>
             child: TextField(
               style: TextStyle(color: Colors.grey[200]),
               decoration: InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: shadeA, width: 2.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: shadeA, width: 2.0),
+                ),
                 counterStyle: TextStyle(color: Colors.grey[200]),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
@@ -179,25 +187,16 @@ class _MyCustomFormState extends State<MyCustomForm>
         Padding(
             padding: EdgeInsets.fromLTRB(
                 myHorzSpacer * 2, mySpacer * 4, myHorzSpacer * 2, mySpacer * 2),
-            child: RawMaterialButton(
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                fillColor: currentButtonColor,
-                textStyle: TextStyle(color: Colors.lightGreen),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80)),
-                onPressed: isEnabled ? scoreButtonEvent : null,
-                child: Center(
-                  child: Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontFamily: 'roboto',
-                      fontWeight: FontWeight.w600,
-                      fontSize: mediumFontSize,
-                      //gMod.buttonFontSize,
-                      color: currentButtonTextColor,
-                    ), //need to somehow pass buttonfontsize
-                  ),
-                ))),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(bWidth, mySpacer * 6),
+                primary: currentButtonColor,
+                textStyle: TextStyle(
+                    fontSize: mediumFontSize, color: currentButtonTextColor),
+              ),
+              onPressed: isEnabled ? scoreButtonEvent : null,
+              child: Text("Submit"),
+            )),
       ];
     } else if (sMod.winStreak == 0 &&
         !sMod.checkHighScore(sMod.pendingLastWinStreak)) {
@@ -210,6 +209,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             "YOU LOSE",
             textAlign: TextAlign.center,
             style: TextStyle(
+              color: Colors.grey[200],
               fontSize: largeFontSize,
               fontWeight: FontWeight.bold,
             ),
@@ -223,6 +223,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: smallFontSize,
+              color: Colors.grey[200],
             ),
             //    style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
           ),
@@ -234,6 +235,7 @@ class _MyCustomFormState extends State<MyCustomForm>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: smallFontSize,
+                color: Colors.grey[200],
               )),
         ),
         TextButton(
@@ -273,7 +275,8 @@ class _MyCustomFormState extends State<MyCustomForm>
             "YOU WIN!",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: largeFontSize * 1.1,
+              color: Colors.grey[200],
+              fontSize: largeFontSize * 1.04,
               fontWeight: FontWeight.bold,
             ),
             //    style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
@@ -286,6 +289,7 @@ class _MyCustomFormState extends State<MyCustomForm>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: smallFontSize,
+                color: Colors.grey[200],
               )
               //    style: myStyle(widget.buttonFontSize, 'popupMenu')
               ),

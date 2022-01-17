@@ -33,15 +33,15 @@ void main() {
             //textStyle:TextStyle(fontSize: 20, fontStyle: FontStyle.italic)
           )),
           textButtonTheme: TextButtonThemeData(
-              style: ElevatedButton.styleFrom(
-            textStyle: TextStyle(fontFamily: 'roboto'),
+              style: TextButton.styleFrom(
+            textStyle: TextStyle(fontFamily: 'roboto', color: shadeA),
             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(80),
                 side: BorderSide(width: 1, color: shadeA)),
-
-            //primary: Colors.deepOrange, // background color
-            onPrimary: shadeA,
+            primary: shadeA,
+            //backgroundColor: Colors.white,
+            onSurface: Colors.white, //Affects the text color when disabled
             //textStyle:TextStyle(fontSize: 20, fontStyle: FontStyle.italic)
           )),
           //primarySwatch: Colors.blue,
@@ -147,7 +147,7 @@ class MenuScreen extends StatelessWidget {
                           fontFamily: 'roboto',
                           fontSize: buttonFontSize * .55,
                           fontWeight: FontWeight.w400,
-                          color: Colors.black)));
+                          color: Colors.yellow)));
 
               Widget progressionButton = new ElevatedButton(
                   onPressed: () {
@@ -173,7 +173,7 @@ class MenuScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: buttonFontSize * .55,
                           fontWeight: FontWeight.w400,
-                          color: Colors.grey[350],
+                          color: Colors.black,
                         ),
                       )
                     ],
@@ -207,7 +207,7 @@ class MenuScreen extends StatelessWidget {
                               fontFamily: 'roboto',
                               fontSize: buttonFontSize * .55,
                               fontWeight: FontWeight.w400,
-                              color: Colors.grey[350],
+                              color: Colors.black,
                             ),
                           )
                         ],
@@ -215,7 +215,7 @@ class MenuScreen extends StatelessWidget {
 
               Widget howToButton = new Padding(
                   padding: EdgeInsets.only(
-                    top: 0,
+                    top: buttonTopPad,
                     left: buttonLeftPad,
                     right: buttonLeftPad,
                     bottom: buttonTopPad,

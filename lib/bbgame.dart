@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:async';
+//import 'dart:core';
 import 'package:provider/provider.dart';
 //import 'package:flutter/rendering.dart';
 import 'package:blinky_bulb/globals.dart';
@@ -38,6 +39,8 @@ class GameScreen extends StatelessWidget {
           double clearButtonWidth = constraints.maxWidth * .39;
           double clueButtonWidth = constraints.maxWidth * .2;
           double sidePads = constraints.maxWidth * .02;
+          double smallLabelFontSize =
+              math.min(levelLabelWidth, topSize * 2) * .16;
 
           //text size for 'back button' popup
           double textSizer =
@@ -164,7 +167,8 @@ class GameScreen extends StatelessWidget {
                                                     upMod.selectCount,
                                                 buttonTopPad,
                                                 rMod.gameType,
-                                                upMod.timeRemaining);
+                                                upMod.timeRemaining,
+                                                smallLabelFontSize);
                                           }),
                                           SizedBox(
                                               height: topSize,
@@ -181,10 +185,8 @@ class GameScreen extends StatelessWidget {
                                                           TextAlign.center,
                                                       style: TextStyle(
                                                         fontFamily: 'roboto',
-                                                        fontSize: math.max(
-                                                            levelLabelWidth *
-                                                                .16,
-                                                            10),
+                                                        fontSize:
+                                                            smallLabelFontSize,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         color: Colors.yellow,
@@ -238,16 +240,24 @@ class GameScreen extends StatelessWidget {
                                             'clueA',
                                             upMod.clueARelease,
                                             topSize / 4),
-                                        BottomButton(
-                                            clearButtonWidth,
-                                            buttonTopPad,
-                                            rMod.clearSelections,
-                                            'Clear',
-                                            true,
-                                            true,
-                                            'clear',
-                                            true,
-                                            topSize / 4),
+                                        Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0,
+                                                buttonTopPad * 1,
+                                                0,
+                                                buttonTopPad * 1),
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                rMod.clearSelections();
+                                              },
+                                              child: Text('Clear'),
+                                              style: ElevatedButton.styleFrom(
+                                                minimumSize: Size.fromWidth(
+                                                    clearButtonWidth),
+                                                textStyle: TextStyle(
+                                                    fontSize: topSize / 4),
+                                              ),
+                                            )),
                                         BottomButton(
                                             clueButtonWidth,
                                             buttonTopPad,
@@ -276,36 +286,79 @@ class SelectionsCounter extends StatelessWidget {
   final isSub = false;
   final String gameType;
   final int timeRemaining;
+  final double labelFontSize;
+
   static const double spacerPercent = 0.1; //percent of diameter
-  SelectionsCounter(this.height, this.width, this.selectionsMax,
-      this.selectionsCurrent, this.buttPad, this.gameType, this.timeRemaining);
+  SelectionsCounter(
+      this.height,
+      this.width,
+      this.selectionsMax,
+      this.selectionsCurrent,
+      this.buttPad,
+      this.gameType,
+      this.timeRemaining,
+      this.labelFontSize);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> colList = [];
     double clockHeight = (height - buttPad * 0) * .6;
-    Widget clock = Container(
-      width: math.min(width * (1 - spacerPercent * 2), clockHeight * 1.8),
-      height: clockHeight,
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        color: Colors.black, //Colors.grey[900],
-        border: Border.all(
-          color: Colors.black, //Colors.white,
-        ),
-      ),
-      child: Center(
-          child: Text(
-        '$timeRemaining',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: 'roboto',
-          fontSize: clockHeight * .85,
-          fontWeight: FontWeight.w600,
-          color: Colors.yellow,
-        ),
-      )),
-    );
+    double widthFactor =
+        math.min(width * (1 - spacerPercent), clockHeight * 1.8);
+    bool odd;
+    bool ending;
+    odd = timeRemaining % 2 == 1;
+    ending = timeRemaining < 21;
+    List<Widget> colList = [];
+    Widget clock = Padding(
+        padding:
+            EdgeInsets.only(top: clockHeight * .02, bottom: clockHeight * .02),
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 500),
+          width: widthFactor,
+          height: clockHeight,
+          decoration: BoxDecoration(
+            //color: (odd && ending) ? Colors.red : Colors.grey[900],
+            boxShadow: [
+              BoxShadow(
+                //color: Colors.grey[900],
+                color: Colors.black,
+                //color: (odd && ending) ? Colors.red : Colors.black,
+              ),
+              BoxShadow(
+                color: (odd)
+                    ? ((odd && ending) ? Colors.red : Colors.grey[800])
+                    : Colors.black,
+                //color: Colors.grey[900], //odd ? Colors.green : Colors.grey[800],
+                spreadRadius: -width / 32,
+                blurRadius: width / 10,
+              ),
+            ],
+
+            shape: BoxShape.rectangle,
+            //color: Colors.black, //Colors.grey[900],
+          ),
+          child: Center(
+              child: timeRemaining <= 0
+                  ? Text(
+                      'OUT OF TIME',
+                      style: TextStyle(
+                        fontFamily: 'roboto',
+                        fontSize: labelFontSize,
+                        //fontWeight: FontWeight.w600,
+                        color: Colors.red,
+                      ),
+                    )
+                  : Text(
+                      '${((timeRemaining + 1) / 2).floor()}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'roboto',
+                        fontSize: clockHeight * .81,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    )),
+        ));
 
     double circleWidthMax =
         width / (selectionsMax + (selectionsMax + 1) * spacerPercent);
@@ -381,10 +434,14 @@ class BottomButton extends StatelessWidget {
       child: AnimatedOpacity(
           opacity: released ? 1 : 0,
           duration: const Duration(milliseconds: 600),
-          child: ElevatedButton(
+          child: TextButton(
             style: TextButton.styleFrom(
-                minimumSize: Size.fromWidth(width),
-                textStyle: TextStyle(fontSize: bFontSize)),
+              minimumSize: Size.fromWidth(width),
+              textStyle: TextStyle(fontSize: bFontSize),
+              side: isEnabled
+                  ? BorderSide(width: 1, color: shadeA)
+                  : BorderSide(width: 1, color: Colors.grey[800]),
+            ),
             onPressed: isEnabled
                 ? () {
                     runFunction(buttonID);
@@ -394,7 +451,7 @@ class BottomButton extends StatelessWidget {
               bText,
               style: TextStyle(
                 fontFamily: 'roboto',
-                color: Colors.white,
+                //color: Colors.white,
               ),
             ),
           )),
@@ -1031,7 +1088,7 @@ class RoundModel extends ChangeNotifier {
   int version = 0;
   String gameType;
   Timer timer;
-  int timeRemaining = 40;
+  int timeRemaining = 30; //in half seconds
   int maxLevel;
   List<List<double>> leftBlastDist; //TODO: remove this probably
   List<List<double>> topBlastDist;
@@ -1132,7 +1189,7 @@ class RoundModel extends ChangeNotifier {
   }
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
+    const oneSec = const Duration(milliseconds: 500);
     timer = new Timer.periodic(
       oneSec,
       (Timer timer) {
@@ -1253,7 +1310,7 @@ class RoundModel extends ChangeNotifier {
     }
   }
 
-  void clearSelections(String buttonID) {
+  void clearSelections() {
     for (var i = 0; i < selectState.length; i++) {
       for (var j = 0; j < selectState[i].length; j++) {
         if (selectState[i][j]) {
@@ -1507,32 +1564,25 @@ class RoundModel extends ChangeNotifier {
 }
 //*****************
 
-//still need to fix/revise the Submit button for high scores to a ElevatedButton
-//make the clue button unavailable outline color still visible/standardized
-
-//on the main menu, make the win streak and level labels only show up if they're not =0
-
 //timer aesthetics
 //fix all the scope issues of provider
-
-//add the back-button question to ScramblyWord
-//upload scrambly word to github
+//arrange all the colors as global variables
+//  then create new color scheme
 
 //re: round generation, maybe make it choose new solution nodes if none are arrows and a fair number of arrows exists
 //way to check a saved round for multiple solutions using existing code..
 
-//make the clear/reset button become unavailable when no selections are made?
-//figure out how to implement theme with ThemeData.elevatedButtonTheme..
+//add a level selector
+//on the main menu, make the win streak and level labels only show up if they're not equal zero (?)
 //in addition to numbers, make entire background a "timer" glistening red wave?
-//use the blue highlight thing for the clue? dot was cool tho. could make an octagon
-//add a dark mode switch?
-//add some end-of-round logic
 //scale the selection-ring and banned-ring border widths to bulb radius
-//make a minimum size for bulbs that's like 7 down 5 across
 //rename the game modes "theraputic" and "competitive"?
 //consider a "easy" and "hard" mode based on adding a selection/ changing max map size?
 //make the clear button have a brief light orange background flash?
-//improve the loading screen; remove top/bottom sections and add animation?
+//add a dark mode switch?
+
+//add the back-button question to ScramblyWord
+//upload scrambly word to github
 
 //run in Terminal:
 //C:\JON\flutter\bin\flutter.bat doctor
