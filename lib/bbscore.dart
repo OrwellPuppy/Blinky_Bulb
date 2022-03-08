@@ -82,6 +82,7 @@ class ScoreModel extends ChangeNotifier {
   }
 
   bool checkHighScore(int thisWinStreak) {
+    //print('@@@@@ this win streak: $thisWinStreak');
     //reset last high score
     //lastHighScore = 999;
     //returns true if a high score is set

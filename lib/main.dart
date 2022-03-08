@@ -9,7 +9,7 @@ import 'package:blinky_bulb/bbscore.dart';
 import 'package:blinky_bulb/globals.dart';
 import 'package:blinky_bulb/transition.dart';
 
-//import 'dart:ui';
+import 'dart:ui';
 import 'dart:math';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -20,29 +20,26 @@ void main() {
         debugShowCheckedModeBanner: false,
         title: 'Blinky Bulb',
         theme: ThemeData(
-          primaryColor: Colors.pink,
-
+          primaryColor: shadeF, //not used anywhere(?)
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
             textStyle: TextStyle(fontFamily: 'roboto'),
             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(80)),
-            primary: shadeA, // background color
-            onPrimary: Colors.white,
+            primary: shadeA, //button background color
+            onPrimary: myWhite, //button text color
             //textStyle:TextStyle(fontSize: 20, fontStyle: FontStyle.italic)
           )),
           textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-            textStyle: TextStyle(fontFamily: 'roboto', color: shadeA),
+            textStyle: TextStyle(fontFamily: 'roboto', color: shadeE),
             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(80),
                 side: BorderSide(width: 1, color: shadeA)),
-            primary: shadeA,
-            //backgroundColor: Colors.white,
-            onSurface: Colors.white, //Affects the text color when disabled
-            //textStyle:TextStyle(fontSize: 20, fontStyle: FontStyle.italic)
+            // primary: shadeA,
+            onSurface: myWhite, //Affects the text color when disabled
           )),
           //primarySwatch: Colors.blue,
           //scaffoldBackgroundColor: mainBackgroundColor,
@@ -81,9 +78,10 @@ class MenuScreen extends StatelessWidget {
     print('MenuScreen Built');
     //trigger initialization of ScoreModel
     var sMod = Provider.of<ScoreModel>(context, listen: true);
+
     return SafeArea(
         child: Scaffold(
-            backgroundColor: Colors.black,
+            backgroundColor: myBackground,
             resizeToAvoidBottomInset: false,
             body: LayoutBuilder(builder: (context, constraints) {
               final int buttonsCount = 4;
@@ -136,7 +134,7 @@ class MenuScreen extends StatelessWidget {
                           fontFamily: 'roboto',
                           fontSize: buttonFontSize * .55,
                           fontWeight: FontWeight.w400,
-                          color: Colors.yellow)));
+                          color: popupTextColor)));
               Widget infoLabel = Padding(
                   padding: EdgeInsets.only(
                     top: buttonTopPad * 2,
@@ -147,7 +145,7 @@ class MenuScreen extends StatelessWidget {
                           fontFamily: 'roboto',
                           fontSize: buttonFontSize * .55,
                           fontWeight: FontWeight.w400,
-                          color: Colors.yellow)));
+                          color: popupTextColor)));
 
               Widget progressionButton = new ElevatedButton(
                   onPressed: () {
@@ -165,7 +163,7 @@ class MenuScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: buttonFontSize,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: myWhite,
                         ),
                       ),
                       Text(
@@ -173,7 +171,7 @@ class MenuScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: buttonFontSize * .55,
                           fontWeight: FontWeight.w400,
-                          color: Colors.black,
+                          color: myBlackText,
                         ),
                       )
                     ],
@@ -198,7 +196,7 @@ class MenuScreen extends StatelessWidget {
                               fontFamily: 'roboto',
                               fontSize: buttonFontSize,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                              color: myWhite,
                             ),
                           ),
                           Text(
@@ -207,7 +205,7 @@ class MenuScreen extends StatelessWidget {
                               fontFamily: 'roboto',
                               fontSize: buttonFontSize * .55,
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: myBlackText,
                             ),
                           )
                         ],
@@ -218,22 +216,29 @@ class MenuScreen extends StatelessWidget {
                     top: buttonTopPad,
                     left: buttonLeftPad,
                     right: buttonLeftPad,
-                    bottom: buttonTopPad,
+                    bottom: 0, //buttonTopPad,
                   ),
                   child: TextButton(
-                    style: TextButton.styleFrom(
-                      minimumSize: Size(buttonWidth, buttonHeight / 1.35),
-                      textStyle: TextStyle(
-                        fontSize: buttonFontSize * .75,
-                        //fontWeight: FontWeight.w500,
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(80),
+                        ),
+                        minimumSize: Size(buttonWidth, buttonHeight / 1.35),
+                        textStyle: TextStyle(
+                          fontSize: buttonFontSize * 1.0,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      print('HowToPlay press');
-                      Navigator.pushNamed(context, '/howToPlay');
-                    },
-                    child: const Text('How To Play'),
-                  ));
+                      onPressed: () {
+                        print('HowToPlay press');
+                        Navigator.pushNamed(context, '/howToPlay');
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.psychology, size: buttonFontSize * 1.0),
+                            const Text(' How To Play'),
+                          ])));
 
               Widget scoresButton = new Padding(
                   padding: EdgeInsets.only(
@@ -243,19 +248,27 @@ class MenuScreen extends StatelessWidget {
                     bottom: 0,
                   ),
                   child: TextButton(
-                    style: TextButton.styleFrom(
-                      minimumSize: Size(buttonWidth, buttonHeight / 1.35),
-                      textStyle: TextStyle(
-                        fontSize: buttonFontSize * .75,
-                        //    fontWeight: FontWeight.w500,
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(80),
+                        ),
+                        minimumSize: Size(buttonWidth, buttonHeight / 1.35),
+                        textStyle: TextStyle(
+                          fontSize: buttonFontSize * 1.0,
+                          fontWeight: FontWeight.w500,
+                          //    fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      print('High Scores pressed');
-                      Navigator.pushNamed(context, '/highScores');
-                    },
-                    child: const Text('High Scores'),
-                  ));
+                      onPressed: () {
+                        print('High Scores pressed');
+                        Navigator.pushNamed(context, '/highScores');
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.star_border, size: buttonFontSize * 1.0),
+                            const Text(' High Scores'),
+                          ])));
 
               Widget myTitle = Center(
                   child: Container(
@@ -268,7 +281,7 @@ class MenuScreen extends StatelessWidget {
                           fontFamily: 'roboto',
                           fontSize: titleFontSize,
                           fontWeight: FontWeight.w900,
-                          color: Colors.yellow,
+                          color: shadeB,
                         ),
                       )));
 
@@ -322,9 +335,94 @@ class MenuScreen extends StatelessWidget {
 class HowToScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var sMod = Provider.of<ScoreModel>(context, listen: false);
-    sMod.clearData();
-    return SafeArea(child: Text('How To screen'));
+    print('ScoreScreen Built');
+    var totWidth = getWidth(context);
+    var totHeight = getHeight(context);
+    var topSpace = totHeight * .02;
+    var lettFontSize = min(totWidth, totHeight) * 0.047;
+    var buttonFontSize = lettFontSize * .9;
+    var howToText = new TextStyle(
+      fontSize: lettFontSize * 1.02,
+      color: popupTextColor,
+      fontFamily: 'roboto',
+    );
+
+    return SafeArea(
+        child: Scaffold(
+      backgroundColor: myBackground,
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+          padding: EdgeInsets.only(left: 15, right: 15),
+          child: Column(children: [
+            Padding(
+                padding: EdgeInsets.only(top: topSpace * 3, bottom: topSpace),
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    'HOW TO PLAY',
+                    style: TextStyle(
+                      fontFamily: 'roboto',
+                      fontSize: lettFontSize * 1.5,
+                      fontWeight: FontWeight.w900,
+                      color: popupTextColor,
+                    ),
+                  ),
+                ])),
+            Padding(
+                padding: EdgeInsets.only(bottom: topSpace),
+                child: Text(
+                  "it's easy",
+                  style: TextStyle(
+                    fontFamily: 'roboto',
+                    fontSize: lettFontSize,
+                    color: popupTextColor,
+                    fontStyle: FontStyle.italic,
+                  ),
+                )),
+            Text(''),
+            Text(
+              'Blinky Bulb is a logic puzzle game, a twist on the classic game Lights Out.',
+              style: howToText,
+            ),
+            Text(''),
+            //Spacer(),
+            Text(
+              'Select a bulb to toggle a pattern of bulbs on or off. To win, select the correct combination of bulbs such that all the bulbs are toggled off. Each round has a limit on the number of bulbs that can be selected.',
+              style: howToText,
+            ),
+            //Spacer(),
+            Text(''),
+            Text(
+              'Solve puzzles with no time limit in PROGRESSION, or challenge yourself by solving procedurally generated puzzles in under 30 seconds in ROULETTE.',
+              style: howToText,
+            ),
+            Text(''),
+            Text(
+              'PROGRESSION starts out easy and serves as a tutorial, so you may want to begin there.',
+              style: howToText,
+            ),
+            // Spacer(),
+          ])),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          //Navigate back to first screen when tapped.
+          Navigator.pop(context);
+          //Navigator.pushNamed(context, '/second');
+        },
+        label: Text(
+          'Exit',
+          style: TextStyle(
+            fontFamily: 'roboto',
+            fontSize: buttonFontSize,
+            //fontWeight: FontWeight.w900,
+            color: myWhite,
+          ),
+        ),
+        icon: Icon(Icons.arrow_back, color: myWhite),
+        backgroundColor: shadeA,
+      ),
+    ));
   }
 }
 
@@ -335,14 +433,16 @@ class ScoreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var sMod = Provider.of<ScoreModel>(context, listen: false);
     print('ScoreScreen Built');
+    //sMod.clearData();
     var totWidth = getWidth(context);
+    var totHeight = getHeight(context);
     var sideSpace = totWidth * .06;
-    var topSpace = getHeight(context) * .02;
-    //var myFontSize = totWidth * .047;
+    var topSpace = totHeight * .02;
     var lettWidth = totWidth / 16;
     var lettHeight = lettWidth * 1.66;
-    //var letterFontSize = lettWidth * 1.3 - 6;
-    var buttonFontSize = totWidth * .035;
+    var lettFontSize = min(totWidth, totHeight) * 0.047;
+
+    var buttonFontSize = lettFontSize * .9;
     List<int> myScores = [];
     List<String> myNames = [];
     List<String> myDates = [];
@@ -350,25 +450,36 @@ class ScoreScreen extends StatelessWidget {
     myScores = sMod.expertScores;
     myNames = sMod.expertNames;
     myDates = sMod.expertDates;
-
+    //print('@@@@@ this win streak: $thisWinStreak');
     var myBoxDecoration;
     var myRegularBoxDecoration = new BoxDecoration();
 
     var mySpecialBoxDecoration = new BoxDecoration(
       boxShadow: [
         BoxShadow(
-          color: Colors.orange,
+          color: shadeB,
         ),
         BoxShadow(
-          color: Colors.black,
+          color: myBackground,
           spreadRadius: 0,
           blurRadius: lettHeight / 6,
         ),
       ],
     );
-
-    var scoreTextStyle = new TextStyle(
-        fontSize: 20, fontStyle: FontStyle.italic, color: Colors.orange);
+    var headerTextStyle = new TextStyle(
+      fontSize: lettFontSize * 1.1,
+      decoration: TextDecoration.underline,
+      color: popupTextColor,
+      fontWeight: FontWeight.w800,
+      fontFamily: 'roboto', //TODO: need monospaced fonts
+    );
+    var scoreTextStyleInput = new TextStyle(
+      fontSize: lettFontSize,
+      fontStyle: FontStyle.italic,
+      color: popupTextColor,
+      fontFamily: 'Inconsolata',
+      fontFeatures: [FontFeature.tabularFigures()],
+    );
 
     List<Widget> scoreList = [];
     for (var i = 0; i < sMod.maxScores; i++) {
@@ -388,38 +499,52 @@ class ScoreScreen extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.only(left: sideSpace / 2),
                 child: Text(
-                  '${((i + 1).toString() + '. ').padRight(4, ' ')}${myNames[i].padRight(10, ' ')}', //
-                  style: scoreTextStyle,
+                  '${((i + 1).toString() + '. ').padRight(4, ' ')}${myNames[i].padRight(10, ' ')}',
+                  style: scoreTextStyleInput,
                 )),
             Spacer(),
             Text(
               '${myDates[i]}',
-              style: scoreTextStyle,
+              style: scoreTextStyleInput,
             ),
             Spacer(),
             Padding(
                 padding: EdgeInsets.only(right: sideSpace / 2),
                 child: Text(
                   '${(myScores[i] == 0 ? '-' : myScores[i].toString()).padLeft(7, ' ')}',
-                  style: scoreTextStyle,
+                  style: scoreTextStyleInput,
                 )),
           ])));
     }
 
     return SafeArea(
         child: Scaffold(
+      backgroundColor: myBackground,
       resizeToAvoidBottomInset: false,
       body: Column(children: [
         Padding(
             padding: EdgeInsets.only(top: topSpace * 3, bottom: topSpace),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('HIGH '),
-              Text('SCORES'),
+              Text(
+                'HIGH SCORES',
+                style: TextStyle(
+                  fontFamily: 'roboto',
+                  fontSize: lettFontSize * 1.5,
+                  fontWeight: FontWeight.w900,
+                  color: shadeB,
+                ),
+              ),
             ])),
         Padding(
             padding: EdgeInsets.only(bottom: topSpace),
             child: Text(
-              'roulette',
+              'ROULETTE',
+              style: TextStyle(
+                fontFamily: 'roboto',
+                fontSize: lettFontSize,
+                //fontWeight: FontWeight.w900,
+                color: popupTextColor,
+              ),
               //style: myStyle(myFontSize + 10, 'highScoreTitle'),
             )),
         Padding(
@@ -428,18 +553,18 @@ class ScoreScreen extends StatelessWidget {
               Text('          '),
               Text(
                 'Name',
-                style: scoreTextStyle,
+                style: headerTextStyle,
               ),
               Text(''),
               Spacer(),
               Text(
                 'Date',
-                style: scoreTextStyle,
+                style: headerTextStyle,
               ),
               Spacer(),
               Text(
                 'Score',
-                style: scoreTextStyle,
+                style: headerTextStyle,
               ),
             ])),
         Flexible(
@@ -456,10 +581,15 @@ class ScoreScreen extends StatelessWidget {
           //Navigator.pushNamed(context, '/second');
         },
         label: Text(
-          'Return To Menu',
-          //style: myStyle(buttonFontSize, 'buttonStyle')),
+          'Exit',
+          style: TextStyle(
+            fontFamily: 'roboto',
+            fontSize: buttonFontSize,
+            //fontWeight: FontWeight.w900,
+            color: myWhite,
+          ),
         ),
-        icon: Icon(Icons.arrow_back, color: Colors.white),
+        icon: Icon(Icons.arrow_back, color: myWhite),
         backgroundColor: shadeA,
       ),
     ));

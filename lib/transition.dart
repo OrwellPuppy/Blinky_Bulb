@@ -42,13 +42,13 @@ class _MyCustomFormState extends State<MyCustomForm>
   void initState() {
     myController.text = '';
     super.initState();
-    aniController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
+    aniController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 750));
     myAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: aniController,
         curve: Interval(
-          0.5,
+          0.01,
           1,
           curve: Curves.easeOutQuad,
         ),
@@ -102,7 +102,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             "YOU SET A HIGH SCORE!",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.grey[200],
+              color: shadeB,
               fontSize: largeFontSize,
               fontWeight: FontWeight.bold,
             ),
@@ -117,7 +117,7 @@ class _MyCustomFormState extends State<MyCustomForm>
                   : "Out of time. Final win streak: ${sMod.pendingLastWinStreak}",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.grey[200],
+                color: popupTextColor,
                 fontSize: smallFontSize,
               ),
             )),
@@ -128,7 +128,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             "Enter name for scoreboard:",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.grey[200],
+              color: popupTextColor,
               fontSize: smallFontSize,
             ),
             //    style: myStyle(smallButtonFontSize, 'popupMenu')
@@ -138,7 +138,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             padding:
                 EdgeInsets.fromLTRB(myHorzSpacer * 2, 4, myHorzSpacer * 2, 0),
             child: TextField(
-              style: TextStyle(color: Colors.grey[200]),
+              style: TextStyle(color: popupTextColor),
               decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: shadeA, width: 2.0),
@@ -146,7 +146,7 @@ class _MyCustomFormState extends State<MyCustomForm>
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: shadeA, width: 2.0),
                 ),
-                counterStyle: TextStyle(color: Colors.grey[200]),
+                counterStyle: TextStyle(color: popupTextColor),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
                     width: 1.0,
@@ -157,7 +157,7 @@ class _MyCustomFormState extends State<MyCustomForm>
 
               controller: myController,
               autocorrect: false,
-              cursorColor: Colors.grey[600], //cursorColor,
+              cursorColor: popupTextColor, //cursorColor,
               enableSuggestions: false,
               keyboardAppearance: Brightness.dark,
               maxLines: 1,
@@ -166,15 +166,15 @@ class _MyCustomFormState extends State<MyCustomForm>
                   isEnabled = true;
                   setState(() {
                     currentButtonColor = shadeA;
-                    currentButtonTextColor = Colors.white;
+                    currentButtonTextColor = myWhite;
                   });
                 } else {
                   isEnabled = false;
                   setState(() {
                     currentButtonColor =
-                        Colors.grey[800]; //disabledButtonColor;
+                        backgroundLightContrast; //disabledButtonColor;
                     currentButtonTextColor =
-                        Colors.grey[700]; // disabledButtonTextColor;
+                        backgroundContrast; // disabledButtonTextColor;
                   });
                 }
               },
@@ -209,7 +209,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             "YOU LOSE",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.grey[200],
+              color: popupTextColor,
               fontSize: largeFontSize,
               fontWeight: FontWeight.bold,
             ),
@@ -223,7 +223,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: smallFontSize,
-              color: Colors.grey[200],
+              color: popupTextColor,
             ),
             //    style: myStyle(widget.buttonFontSize, 'popupMenuTitle')
           ),
@@ -235,7 +235,7 @@ class _MyCustomFormState extends State<MyCustomForm>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: smallFontSize,
-                color: Colors.grey[200],
+                color: popupTextColor,
               )),
         ),
         TextButton(
@@ -275,7 +275,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             "YOU WIN!",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.grey[200],
+              color: shadeB,
               fontSize: largeFontSize * 1.04,
               fontWeight: FontWeight.bold,
             ),
@@ -289,7 +289,7 @@ class _MyCustomFormState extends State<MyCustomForm>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: smallFontSize,
-                color: Colors.grey[200],
+                color: popupTextColor,
               )
               //    style: myStyle(widget.buttonFontSize, 'popupMenu')
               ),
@@ -344,7 +344,7 @@ class _MyCustomFormState extends State<MyCustomForm>
                             opacity: myAnimation,
                             child: Container(
                                 decoration: ShapeDecoration(
-                                    color: Colors.grey[900],
+                                    color: popUpBackground,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(15.0))),

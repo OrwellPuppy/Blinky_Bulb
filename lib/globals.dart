@@ -3,15 +3,36 @@ import 'dart:math' as math;
 import 'package:blinky_bulb/complete_board.dart';
 
 //colors
-Color shadeA = Colors.deepOrange; //Colors.lightBlueAccent;
+Color shadeA = Color.fromRGBO(
+    58, 134, 255, 1); //Colors.deepOrange; //Colors.lightBlueAccent;
+Color shadeB = Color.fromRGBO(255, 190, 11, 1); //Colors.yellow; //bulb color
+Color shadeBgrad = Colors.white; //bulb color gradient
+Color shadeC = Color.fromRGBO(255, 0, 110, 1); //Colors.red; //banned node color
+Color shadeD = Color.fromRGBO(58, 134, 255, 1); //selection color
+Color shadeE = Color.fromRGBO(131, 56, 236, 1); //clue highlight color
+Color shadeF = Color.fromRGBO(251, 86, 7, 1); //arrow color
+Color shadeG = Colors.grey[700]; //bulb off color
+Color shadeGgrad = Colors.grey[600]; //bulb off color gradient
+Color myWhite = Colors.white; //text on buttons
+Color myBackground = Colors.black; //background
+Color myBlackText = Colors.black; //black text
+Color popUpBackground = Colors.grey[900]; //popup background color
+Color backgroundLightContrast =
+    Colors.grey[800]; //use for greyed out things, popups background
+Color backgroundContrast = Colors.grey[700]; //use for greyed out things
+Color popupTextColor =
+    Colors.grey[200]; //text on popups and labels on background
 
-//animation speed settings
+//bulb animation speed settings
 const bulbDuration = const Duration(milliseconds: 1500);
 const startDuration = const Duration(milliseconds: 650);
 const bulbCurve = Curves.decelerate;
 const startCurve = Curves.easeInOut;
 const pieceFade = const Duration(milliseconds: 450);
 const pieceCurve = Curves.easeOutQuad;
+
+//ending animation speed settings
+const explodeDuration = const Duration(milliseconds: 1800);
 
 class Node {
   final int row;
@@ -507,6 +528,7 @@ String compactNodeListValues(List<Node> nList) {
   return values;
 }
 
+/*
 class MyButton extends StatelessWidget {
   MyButton(
       this.buttonMinWidth,
@@ -570,6 +592,7 @@ class MyButton extends StatelessWidget {
     );
   }
 }
+*/
 
 double getHeight(BuildContext context) {
   //compensate for left/bottom/right/top padding for OS stuff

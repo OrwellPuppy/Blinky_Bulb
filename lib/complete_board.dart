@@ -32,7 +32,6 @@ class CompleteBoard {
     return 'CompleteBoard($rows, $columns, $selectionsMax, $cornerStart, $isHexBoard, ${getNodeTypeMatrixValues(gameBoard)})';
   }
 
-  //todo: QQ cBoard (2nd-level)
   void printCompact() {
     print(
         'metaP.add([$rows, $columns, $selectionsMax, ${cornerStart ? 1 : 0}, ${isHexBoard ? 1 : 0}]);');
@@ -61,7 +60,6 @@ class CompleteBoard {
     return values;
   }
 
-  //todo: QQ board matrix
   void printMatrixCompact(List<List<NodeType>> gb) {
     String boardValues = 'boardP.add([';
     String paramValues = 'arrowsP.add([';
