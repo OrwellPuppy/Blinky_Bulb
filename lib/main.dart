@@ -346,7 +346,8 @@ class HowToScreen extends StatelessWidget {
       color: popupTextColor,
       fontFamily: 'roboto',
     );
-
+    var sMod = Provider.of<ScoreModel>(context, listen: false);
+    sMod.clearData();
     return SafeArea(
         child: Scaffold(
       backgroundColor: myBackground,
@@ -433,7 +434,6 @@ class ScoreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var sMod = Provider.of<ScoreModel>(context, listen: false);
     print('ScoreScreen Built');
-    //sMod.clearData();
     var totWidth = getWidth(context);
     var totHeight = getHeight(context);
     var sideSpace = totWidth * .06;

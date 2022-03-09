@@ -3,24 +3,26 @@ import 'dart:math' as math;
 import 'package:blinky_bulb/complete_board.dart';
 
 //colors
-Color shadeA = Color.fromRGBO(
+const Color shadeA = Color.fromRGBO(
     58, 134, 255, 1); //Colors.deepOrange; //Colors.lightBlueAccent;
-Color shadeB = Color.fromRGBO(255, 190, 11, 1); //Colors.yellow; //bulb color
-Color shadeBgrad = Colors.white; //bulb color gradient
-Color shadeC = Color.fromRGBO(255, 0, 110, 1); //Colors.red; //banned node color
-Color shadeD = Color.fromRGBO(58, 134, 255, 1); //selection color
-Color shadeE = Color.fromRGBO(131, 56, 236, 1); //clue highlight color
-Color shadeF = Color.fromRGBO(251, 86, 7, 1); //arrow color
-Color shadeG = Colors.grey[700]; //bulb off color
-Color shadeGgrad = Colors.grey[600]; //bulb off color gradient
-Color myWhite = Colors.white; //text on buttons
-Color myBackground = Colors.black; //background
-Color myBlackText = Colors.black; //black text
-Color popUpBackground = Colors.grey[900]; //popup background color
-Color backgroundLightContrast =
+const Color shadeB =
+    Color.fromRGBO(255, 190, 11, 1); //Colors.yellow; //bulb color
+const Color shadeBgrad = Colors.white; //bulb color gradient
+const Color shadeC =
+    Color.fromRGBO(255, 0, 110, 1); //Colors.red; //banned node color
+const Color shadeD = Color.fromRGBO(58, 134, 255, 1); //selection color
+const Color shadeE = Color.fromRGBO(131, 56, 236, 1); //clue highlight color
+const Color shadeF = Color.fromRGBO(251, 86, 7, 1); //arrow color
+final Color shadeG = Colors.grey[700]; //bulb off color
+final Color shadeGgrad = Colors.grey[600]; //bulb off color gradient
+const Color myWhite = Colors.white; //text on buttons
+const Color myBackground = Colors.black; //background
+const Color myBlackText = Colors.black; //black text
+final Color popUpBackground = Colors.grey[900]; //popup background color
+final Color backgroundLightContrast =
     Colors.grey[800]; //use for greyed out things, popups background
-Color backgroundContrast = Colors.grey[700]; //use for greyed out things
-Color popupTextColor =
+final Color backgroundContrast = Colors.grey[700]; //use for greyed out things
+final Color popupTextColor =
     Colors.grey[200]; //text on popups and labels on background
 
 //bulb animation speed settings
@@ -495,7 +497,7 @@ class CompleteRound {
 
 //CompleteRound (top level)
   void printCompact() {
-    print("//*******************");
+    //print("//*******************");
     //cBoard.printValues();
     cBoard.printCompact();
     print('solutionP.add(${compactNodeListValues(solution)});');

@@ -1154,12 +1154,12 @@ class RoundModel extends ChangeNotifier {
       unpackMyCompleteRound(cr);
       //generate round using an async compute
       generateMyCompleteRound(cr);
+      //oneTimeProgressionRoundGen(cr);
     } else if (gameType == 'prog') {
       Levels mySavedLevels = new Levels();
       maxLevel = mySavedLevels.getMaxLevel();
       cr = mySavedLevels.loadLevel(thisLevelOrStreak - 1);
       unpackMyCompleteRound(cr);
-      //version++;
       notifyListeners();
       //print to console
       cr.printCompact();
@@ -1176,9 +1176,17 @@ class RoundModel extends ChangeNotifier {
     super.dispose();
   }
 
+  oneTimeProgressionRoundGen(CompleteRound cr) async {
+    for (int i = 1; i < 500; i++) {
+      cr = await compute(generator, 1); //had to pass a parameter..
+      cr.printCompact();
+    }
+  }
+
   generateMyCompleteRound(CompleteRound cr) async {
     cr = await compute(generator, 1); //had to pass a parameter..
     Timer(Duration(milliseconds: 300), () {
+      //minimum time for loading screen
       unpackMyCompleteRound(cr);
       phase = "startB"; //causes the notifyListeners to trigger rebuild
       notifyListeners();
@@ -1341,7 +1349,7 @@ class RoundModel extends ChangeNotifier {
     if (checkNoDupes(myList)) {
       return myList;
     } else {
-      print("discarded duplicate");
+      //print("discarded duplicate");
       return getRandomNodes(myBoard);
     }
   }
@@ -1552,9 +1560,11 @@ class RoundModel extends ChangeNotifier {
     return new Node(thisRow, thisCol);
   }
 
-//CompleteRound generator() {
   static Future<CompleteRound> generator(int dummyInt) async {
-    print('Generating............');
+    const bool testingMsgs = false;
+    if (testingMsgs) {
+      print('Generating............');
+    }
     List<Node> finalSolution;
     List<Node> bannedList = [];
     List<Node> initialSolution;
@@ -1571,10 +1581,14 @@ class RoundModel extends ChangeNotifier {
       //get all possible solutions
       roughSolutionList = solver(thisBoard, thisBoard.selectionsMax,
           LightState(thisBoard, initialSolution));
-      roughSolutionList
-          .forEach((element) => printNodeList('All Solutions', element));
-      print(
-          'board generated. bad? ${isBadBoard(roughSolutionList, thisBoard.selectionsMax)}');
+      if (testingMsgs) {
+        roughSolutionList
+            .forEach((element) => printNodeList('All Solutions', element));
+      }
+      if (testingMsgs) {
+        print(
+            'board generated. bad? ${isBadBoard(roughSolutionList, thisBoard.selectionsMax)}');
+      }
       //loop until solutions require max selection
     } while (isBadBoard(roughSolutionList, thisBoard.selectionsMax) ||
         (roughSolutionList.length == 0));
@@ -1582,14 +1596,18 @@ class RoundModel extends ChangeNotifier {
       solutionIndex = 0;
     } else {
       //if multiple solutions, determine banned nodes
-      print('multi solutions: ${roughSolutionList.length}');
+      if (testingMsgs) {
+        print('multi solutions: ${roughSolutionList.length}');
+      }
       solutionIndex = rngNew.nextInt(roughSolutionList.length);
       bannedList =
           getBannedNodes(roughSolutionList, roughSolutionList[solutionIndex]);
     }
     finalSolution = roughSolutionList[solutionIndex];
-    printNodeList('final solution:', finalSolution);
-    printNodeList('banned:', bannedList);
+    if (testingMsgs) {
+      printNodeList('final solution:', finalSolution);
+      printNodeList('banned:', bannedList);
+    }
     //delete arrows from banned nodes for simplicity
     for (int i = 0; i < bannedList.length; i++) {
       if (thisBoard.gameBoard[bannedList[i].row][bannedList[i].col].type == 1) {

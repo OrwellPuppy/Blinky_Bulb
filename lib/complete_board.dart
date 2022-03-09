@@ -171,7 +171,7 @@ class CompleteBoard {
     //print('arrows: $arrows');
     //print('density: $arrowDensity');
     //print('wtdDensity: $arrowWtdDensity');
-    print('boardDifficulty: $boardDifficulty');
+    //print('boardDifficulty: $boardDifficulty');
 
     //use difficulty to determine selectionsMax
     if (boardDifficulty < 0.15) {
@@ -631,19 +631,19 @@ class CompleteBoard {
 
   bool meetsBasicReqs() {
     if (typeZero + typeOne < 10) {
-      print('REROLLED: $typeZero + $typeOne < 10');
+      //print('REROLLED: $typeZero + $typeOne < 10');
       return false;
     } else if (arrowDensity > 1.75) {
-      print('REROLLED: $arrowDensity > 1.7');
+      //print('REROLLED: $arrowDensity > 1.7');
       return false;
     } else if (arrowWtdDensity > 1.3) {
-      print('REROLLED: $arrowWtdDensity > 1.3');
+      //print('REROLLED: $arrowWtdDensity > 1.3');
       return false;
     } else if (!isOneMass()) {
-      print('REROLLED: multiple masses');
+      //print('REROLLED: multiple masses');
       return false;
     } else if (!hasAllSides()) {
-      print('REROLLED: side missing');
+      //print('REROLLED: side missing');
       return false;
     }
     return true;
