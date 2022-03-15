@@ -13,6 +13,12 @@ import 'dart:ui';
 import 'dart:math';
 //import 'package:google_fonts/google_fonts.dart';
 
+class FadeTransitionBuilder extends PageTransitionsBuilder {
+  @override
+  Widget buildTransitions<T>(route, context, animation, secondaryAnimation, child) =>
+      FadeTransition(opacity: animation, child: child);
+}
+
 void main() {
   runApp(ChangeNotifierProvider(
       create: (context) => ScoreModel(),
@@ -20,6 +26,10 @@ void main() {
         debugShowCheckedModeBanner: false,
         title: 'Blinky Bulb',
         theme: ThemeData(
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.iOS: FadeTransitionBuilder(),
+            TargetPlatform.android: FadeTransitionBuilder(),
+          }),
           primaryColor: shadeF, //not used anywhere(?)
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
@@ -68,17 +78,23 @@ void main() {
           '/howToPlay': (context) => HowToScreen(),
           '/highScores': (context) => ScoreScreen(),
           '/transitionScreen': (context) => MyCustomForm(),
+          '/levelFlashScreen': (context) {
+            var sMod = Provider.of<ScoreModel>(context, listen: false);
+            return LevelFlashScreen(sMod.progressionLevel);
+          },
         },
       )));
 }
 
 class MenuScreen extends StatelessWidget {
+  MenuScreen({Key? key} ): super(key: key);
+
   @override
   Widget build(BuildContext context) {
     print('MenuScreen Built');
     //trigger initialization of ScoreModel
     var sMod = Provider.of<ScoreModel>(context, listen: true);
-
+    //sMod.progressionLevel = 8; //for testing
     return SafeArea(
         child: Scaffold(
             backgroundColor: myBackground,
@@ -99,7 +115,8 @@ class MenuScreen extends StatelessWidget {
                 //title measurements--top 30%
                 titleHeight = constraints.maxHeight * .22;
                 titleWidth = constraints.maxWidth * .8;
-                titleFontSize = constraints.maxWidth * .16;
+                titleFontSize =
+                    min(constraints.maxWidth, constraints.maxHeight * .6) * .16;
                 //button measurements--bottom 70% (horz center)
                 buttonHeight = (constraints.maxHeight * .7 / buttonsCount) / 2;
                 buttonWidth = min(
@@ -112,7 +129,8 @@ class MenuScreen extends StatelessWidget {
                 //title measurements--top 30%
                 titleHeight = constraints.maxHeight * .2;
                 titleWidth = constraints.maxWidth * .8;
-                titleFontSize = constraints.maxHeight * .2;
+                titleFontSize =
+                    min(constraints.maxWidth * .6, constraints.maxHeight) * .16;
                 //button measurements--bottom 70% (vert center)
                 buttonHeight = (constraints.maxHeight * .7) / 4;
                 buttonWidth = min(
@@ -147,10 +165,10 @@ class MenuScreen extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           color: popupTextColor)));
 
-              Widget progressionButton = new ElevatedButton(
+              Widget progressionButton = ElevatedButton(
                   onPressed: () {
                     print('progression pressed');
-                    Navigator.pushNamed(context, '/progression');
+                    Navigator.pushNamed(context, '/levelFlashScreen');
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(buttonWidth, buttonHeight),
@@ -177,7 +195,7 @@ class MenuScreen extends StatelessWidget {
                     ],
                   ));
 
-              Widget rouletteButton = new Padding(
+              Widget rouletteButton = Padding(
                   padding: EdgeInsets.only(top: buttonTopPad),
                   child: ElevatedButton(
                       onPressed: () {
@@ -211,7 +229,7 @@ class MenuScreen extends StatelessWidget {
                         ],
                       )));
 
-              Widget howToButton = new Padding(
+              Widget howToButton = Padding(
                   padding: EdgeInsets.only(
                     top: buttonTopPad,
                     left: buttonLeftPad,
@@ -240,7 +258,7 @@ class MenuScreen extends StatelessWidget {
                             const Text(' How To Play'),
                           ])));
 
-              Widget scoresButton = new Padding(
+              Widget scoresButton = Padding(
                   padding: EdgeInsets.only(
                     top: 0,
                     left: buttonLeftPad,
@@ -285,7 +303,7 @@ class MenuScreen extends StatelessWidget {
                         ),
                       )));
 
-              return new OrientationBuilder(builder: (context, orientation) {
+              return OrientationBuilder(builder: (context, orientation) {
                 if (orientation == Orientation.portrait) {
                   return Center(
                       child: Column(
@@ -333,6 +351,7 @@ class MenuScreen extends StatelessWidget {
 }
 
 class HowToScreen extends StatelessWidget {
+  HowToScreen({Key? key} ): super(key: key);
   @override
   Widget build(BuildContext context) {
     print('ScoreScreen Built');
@@ -341,7 +360,7 @@ class HowToScreen extends StatelessWidget {
     var topSpace = totHeight * .02;
     var lettFontSize = min(totWidth, totHeight) * 0.047;
     var buttonFontSize = lettFontSize * .9;
-    var howToText = new TextStyle(
+    var howToText = TextStyle(
       fontSize: lettFontSize * 1.02,
       color: popupTextColor,
       fontFamily: 'roboto',
@@ -353,7 +372,7 @@ class HowToScreen extends StatelessWidget {
       backgroundColor: myBackground,
       resizeToAvoidBottomInset: false,
       body: Padding(
-          padding: EdgeInsets.only(left: 15, right: 15),
+          padding: EdgeInsets.only(left: 15, right: 15, bottom: topSpace * 9),
           child: Column(children: [
             Padding(
                 padding: EdgeInsets.only(top: topSpace * 3, bottom: topSpace),
@@ -365,7 +384,7 @@ class HowToScreen extends StatelessWidget {
                       fontFamily: 'roboto',
                       fontSize: lettFontSize * 1.5,
                       fontWeight: FontWeight.w900,
-                      color: popupTextColor,
+                      color: shadeB,
                     ),
                   ),
                 ])),
@@ -380,29 +399,32 @@ class HowToScreen extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                   ),
                 )),
-            Text(''),
-            Text(
-              'Blinky Bulb is a logic puzzle game, a twist on the classic game Lights Out.',
-              style: howToText,
-            ),
-            Text(''),
-            //Spacer(),
-            Text(
-              'Select a bulb to toggle a pattern of bulbs on or off. To win, select the correct combination of bulbs such that all the bulbs are toggled off. Each round has a limit on the number of bulbs that can be selected.',
-              style: howToText,
-            ),
-            //Spacer(),
-            Text(''),
-            Text(
-              'Solve puzzles with no time limit in PROGRESSION, or challenge yourself by solving procedurally generated puzzles in under 30 seconds in ROULETTE.',
-              style: howToText,
-            ),
-            Text(''),
-            Text(
-              'PROGRESSION starts out easy and serves as a tutorial, so you may want to begin there.',
-              style: howToText,
-            ),
-            // Spacer(),
+            Flexible(
+                child: ListView(children: [
+              //Text(''),
+              Text(
+                'Blinky Bulb is a logic puzzle game, a twist on the classic game Lights Out.',
+                style: howToText,
+              ),
+              Text(''),
+              //Spacer(),
+              Text(
+                'Select a bulb to toggle a pattern of bulbs on or off. To win, select the correct combination of bulbs such that all the bulbs are toggled off. Each round has a limit on the number of bulbs that can be selected.',
+                style: howToText,
+              ),
+              //Spacer(),
+              Text(''),
+              Text(
+                'Solve puzzles with no time limit in PROGRESSION, or challenge yourself by solving procedurally generated puzzles in under 30 seconds in ROULETTE.',
+                style: howToText,
+              ),
+              Text(''),
+              Text(
+                'PROGRESSION starts out easy and serves as a tutorial, so you may want to begin there.',
+                style: howToText,
+              ),
+              // Spacer(),
+            ])),
           ])),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
@@ -428,7 +450,7 @@ class HowToScreen extends StatelessWidget {
 }
 
 class ScoreScreen extends StatelessWidget {
-  ScoreScreen();
+  ScoreScreen({Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -452,9 +474,9 @@ class ScoreScreen extends StatelessWidget {
     myDates = sMod.expertDates;
     //print('@@@@@ this win streak: $thisWinStreak');
     var myBoxDecoration;
-    var myRegularBoxDecoration = new BoxDecoration();
+    var myRegularBoxDecoration = BoxDecoration();
 
-    var mySpecialBoxDecoration = new BoxDecoration(
+    var mySpecialBoxDecoration = BoxDecoration(
       boxShadow: [
         BoxShadow(
           color: shadeB,
@@ -466,14 +488,14 @@ class ScoreScreen extends StatelessWidget {
         ),
       ],
     );
-    var headerTextStyle = new TextStyle(
+    var headerTextStyle = TextStyle(
       fontSize: lettFontSize * 1.1,
       decoration: TextDecoration.underline,
       color: popupTextColor,
       fontWeight: FontWeight.w800,
-      fontFamily: 'roboto', //TODO: need monospaced fonts
+      fontFamily: 'roboto',
     );
-    var scoreTextStyleInput = new TextStyle(
+    var scoreTextStyleInput = TextStyle(
       fontSize: lettFontSize,
       fontStyle: FontStyle.italic,
       color: popupTextColor,

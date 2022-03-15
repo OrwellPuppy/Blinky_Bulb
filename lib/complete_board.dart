@@ -18,15 +18,15 @@ class CompleteBoard {
   double arrowDensity = 0.0;
   double arrowWtdDensity = 0.0;
   double boardDifficulty = 0.0;
-  var rng = new math.Random();
+  var rng = math.Random();
 
   CompleteBoard(
-      [this.rows,
-      this.columns,
-      this.selectionsMax,
+      [this.rows = 1,
+      this.columns = 1,
+      this.selectionsMax = 1,
       this.cornerStart = true,
-      this.isHexBoard,
-      this.gameBoard]);
+      this.isHexBoard = true,
+      this.gameBoard = const [[]]]);
 
   String getValues() {
     return 'CompleteBoard($rows, $columns, $selectionsMax, $cornerStart, $isHexBoard, ${getNodeTypeMatrixValues(gameBoard)})';
@@ -552,7 +552,7 @@ class CompleteBoard {
           if ((cornerStart && (r % 2 == c % 2)) ||
               (!cornerStart && (r % 2 != c % 2))) {
           } else {
-            gameBoard[r][c] = new NodeType(2, isHexBoard);
+            gameBoard[r][c] = NodeType(2, isHexBoard);
           }
         }
       }
@@ -599,7 +599,7 @@ class CompleteBoard {
             }
           } else {
             //erase the unused nodes
-            gameBoard[r][c] = new NodeType(2, isHexBoard);
+            gameBoard[r][c] = NodeType(2, isHexBoard);
           }
         } else {
           //for Square boards
@@ -771,7 +771,7 @@ class CompleteBoard {
     myGameBoard = List.generate(
         rows,
         (int i) => List.generate(
-            columns, (int j) => new NodeType(0, isHexBoard),
+            columns, (int j) => NodeType(0, isHexBoard),
             growable: false),
         growable: false);
 
@@ -1019,17 +1019,17 @@ class CompleteBoard {
   }
 
   deleteNodes(int r, int c) {
-    gameBoard[r][c] = new NodeType(2, isHexBoard);
+    gameBoard[r][c] = NodeType(2, isHexBoard);
   }
 
   restoreNodes(int r, int c) {
     //never used
-    gameBoard[r][c] = new NodeType(0, isHexBoard);
+    gameBoard[r][c] = NodeType(0, isHexBoard);
   }
 
   addArrows(int r, int c) {
     if (gameBoard[r][c].type != 2) {
-      gameBoard[r][c] = new NodeType(1, isHexBoard);
+      gameBoard[r][c] = NodeType(1, isHexBoard);
     }
   }
 
@@ -1042,11 +1042,11 @@ class CompleteBoard {
   addOneArrow(int r, int c) {
     if (gameBoard[r][c].type == 0 && isHexBoard) {
       int aSelect = rng.nextInt(6);
-      gameBoard[r][c] = new NodeType(1, isHexBoard, aSelect == 0, aSelect == 1,
+      gameBoard[r][c] = NodeType(1, isHexBoard, aSelect == 0, aSelect == 1,
           aSelect == 2, aSelect == 3, aSelect == 4, aSelect == 5);
     } else if (gameBoard[r][c].type == 0 && !isHexBoard) {
       int aSelect = rng.nextInt(4);
-      gameBoard[r][c] = new NodeType(1, isHexBoard, false, false, false, false,
+      gameBoard[r][c] = NodeType(1, isHexBoard, false, false, false, false,
           false, false, aSelect == 0, aSelect == 1, aSelect == 2, aSelect == 3);
     }
   }

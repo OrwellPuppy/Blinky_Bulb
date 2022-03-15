@@ -4,7 +4,7 @@ import 'package:blinky_bulb/complete_board.dart';
 List<CompleteRound> getLevels() {
   List<CompleteRound> levels = [];
 //figure out how to output a CompleteBoard...
-  levels.add(new CompleteRound(new CompleteBoard(), [], []));
+  levels.add(CompleteRound(CompleteBoard(), [], []));
 
   levels.add(CompleteRound(
       CompleteBoard(4, 5, 4, true, false, [
@@ -45,11 +45,11 @@ List<CompleteRound> getLevels() {
 
   return levels;
 }
-
+/*
 CompleteRound levelDecompressor(String lvlString) {
   CompleteRound cRound;
   return cRound;
-}
+}*/
 
 class Levels {
   List metaP = [];
@@ -122,7 +122,7 @@ class Levels {
 
   Levels() {
     //******************* LVL 1
-    metaP.add([6, 6, 3, 1, 0]);
+    metaP.add([6, 6, 4, 1, 0]);
     boardP.add([
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
@@ -132,7 +132,7 @@ class Levels {
       [0, 0, 0, 0, 0, 0],
     ]);
     arrowsP.add([]);
-    solutionP.add([1, 1, 3, 3, 5, 5]);
+    solutionP.add([0, 0, 1, 4, 4, 1, 5, 5]);
     bannedP.add([]);
     //******************* LVL 2
     metaP.add([5, 5, 3, 1, 0]);
@@ -147,20 +147,125 @@ class Levels {
     solutionP.add([1, 1, 2, 2, 3, 3]);
     bannedP.add([]);
     //******************* LVL 3
-    metaP.add([7, 6, 3, 1, 0]);
+    metaP.add([7, 7, 4, 1, 0]);
     boardP.add([
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
+      [2, 2, 0, 0, 0, 2, 2],
+      [2, 0, 0, 0, 0, 0, 2],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [2, 0, 0, 0, 0, 0, 2],
+      [2, 2, 0, 0, 0, 2, 2],
     ]);
     arrowsP.add([]);
-    solutionP.add([2, 3, 3, 2, 4, 3]);
+    solutionP.add([2, 4, 4, 2, 4, 4, 2, 2]);
     bannedP.add([]);
+    //******************* LVL 4
+    metaP.add([12, 8, 4, 1, 1]);
+    boardP.add([
+      [2, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 2],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 2],
+      [0, 2, 0, 2, 0, 2, 2, 2],
+      [2, 0, 2, 0, 2, 0, 2, 2],
+      [2, 2, 0, 2, 0, 2, 2, 2],
+      [2, 2, 2, 0, 2, 2, 2, 2]
+    ]);
+    arrowsP.add([]);
+    solutionP.add([2, 4, 2, 6, 5, 5, 7, 1]);
+    bannedP.add([]);
+    //******************* LVL 5
+    metaP.add([7, 5, 3, 1, 0]);
+    boardP.add([
+      [2, 0, 0, 0, 2],
+      [0, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1],
+      [0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0],
+      [2, 0, 0, 0, 2],
+    ]);
+    arrowsP.add([
+      [9],
+      [11],
+      [9]
+    ]);
+    solutionP.add([2, 2, 3, 4, 4, 2]);
+    bannedP.add([]);
+    //******************* LVL 6
+    metaP.add([13, 7, 4, 0, 1]);
+    boardP.add([
+      //[0, 2, 0, 2, 0, 2, 0],
+      [2, 0, 2, 0, 2, 0, 2],
+      [0, 2, 0, 2, 0, 2, 0],
+      [2, 0, 2, 0, 2, 0, 2],
+      [0, 2, 0, 2, 0, 2, 0],
+      [2, 0, 2, 0, 2, 0, 2],
+      [0, 2, 0, 2, 0, 2, 0],
+      [2, 0, 2, 1, 2, 0, 2],
+      [0, 2, 0, 2, 0, 2, 0],
+      [2, 0, 2, 0, 2, 0, 2],
+      [0, 2, 0, 2, 0, 2, 0],
+      [2, 0, 2, 0, 2, 0, 2],
+      [0, 2, 0, 2, 0, 2, 0],
+      [2, 0, 2, 0, 2, 0, 2],
+    ]);
+    arrowsP.add([
+      [2, 3, 4, 5, 6, 7]
+    ]);
+    solutionP.add([8, 1, 8, 5, 2, 3, 6, 3]);
+    bannedP.add([]);
+    //******************* LVL 7
+    metaP.add([7, 3, 4, 1, 0]);
+    boardP.add([
+      [2, 0, 2],
+      [0, 1, 0],
+      [2, 0, 2],
+      [0, 0, 0],
+      [2, 1, 2],
+      [0, 0, 0],
+      [2, 0, 2],
+    ]);
+    arrowsP.add([
+      [10],
+      [8],
+    ]);
+    solutionP.add([4, 1, 3, 0, 3, 2, 0, 1]);
+    bannedP.add([3, 1]);
+    //******************* test for icon
+
     //*******************
+    metaP.add([5, 3, 1, 0, 1]);
+    boardP.add([
+      [0, 0, 0],
+      [0, 2, 0],
+      [2, 0, 2],
+      [0, 2, 0],
+      [2, 0, 2],
+      //[0, 2, 0],
+     // [2, 0, 2]
+    ]);
+    arrowsP.add([
+      
+    ]);
+    solutionP.add([2, 1]);
+    bannedP.add([]);
+//*******************
+    /*
+    metaP.add([1, 1, 4, 1, 0]);
+    boardP.add([
+      [0],
+    ]);
+    arrowsP.add([]);
+    solutionP.add([0, 0]);
+    bannedP.add([]);
+    */
+    //******************* beginning of hard ones
     metaP.add([4, 5, 4, 1, 0]);
     boardP.add([
       [0, 0, 0, 0, 0],

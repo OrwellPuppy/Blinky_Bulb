@@ -13,28 +13,29 @@ const Color shadeC =
 const Color shadeD = Color.fromRGBO(58, 134, 255, 1); //selection color
 const Color shadeE = Color.fromRGBO(131, 56, 236, 1); //clue highlight color
 const Color shadeF = Color.fromRGBO(251, 86, 7, 1); //arrow color
-final Color shadeG = Colors.grey[700]; //bulb off color
-final Color shadeGgrad = Colors.grey[600]; //bulb off color gradient
+final Color shadeG = Colors.grey.shade700; //bulb off color
+final Color shadeGgrad = Colors.grey.shade600; //bulb off color gradient
 const Color myWhite = Colors.white; //text on buttons
 const Color myBackground = Colors.black; //background
 const Color myBlackText = Colors.black; //black text
-final Color popUpBackground = Colors.grey[900]; //popup background color
+final Color popUpBackground = Colors.grey.shade900; //popup background color
 final Color backgroundLightContrast =
-    Colors.grey[800]; //use for greyed out things, popups background
-final Color backgroundContrast = Colors.grey[700]; //use for greyed out things
+    Colors.grey.shade800; //use for greyed out things, popups background
+final Color backgroundContrast =
+    Colors.grey.shade700; //use for greyed out things
 final Color popupTextColor =
-    Colors.grey[200]; //text on popups and labels on background
+    Colors.grey.shade200; //text on popups and labels on background
 
 //bulb animation speed settings
-const bulbDuration = const Duration(milliseconds: 1500);
-const startDuration = const Duration(milliseconds: 650);
+const bulbDuration = Duration(milliseconds: 1500);
+const startDuration = Duration(milliseconds: 650);
 const bulbCurve = Curves.decelerate;
 const startCurve = Curves.easeInOut;
-const pieceFade = const Duration(milliseconds: 450);
+const pieceFade = Duration(milliseconds: 450);
 const pieceCurve = Curves.easeOutQuad;
 
 //ending animation speed settings
-const explodeDuration = const Duration(milliseconds: 1800);
+const explodeDuration = Duration(milliseconds: 1800);
 
 class Node {
   final int row;
@@ -53,7 +54,7 @@ class Node {
 
 class NodeType {
   int type;
-  int arrowCount;
+  late int arrowCount;
 
   //type 0: plain node
   //type 1: node with one or more arrows
@@ -72,17 +73,20 @@ class NodeType {
   bool truWest;
   bool isHex;
 
-  NodeType(this.type, this.isHex,
-      [this.north = false,
-      this.northEast = false,
-      this.southEast = false,
-      this.south = false,
-      this.southWest = false,
-      this.northWest = false,
-      this.truNorth = false,
-      this.truEast = false,
-      this.truSouth = false,
-      this.truWest = false]) {
+  NodeType(
+    this.type,
+    this.isHex, [
+    this.north = false, //2
+    this.northEast = false, //3
+    this.southEast = false, //4,
+    this.south = false, //5
+    this.southWest = false, //6
+    this.northWest = false, //7
+    this.truNorth = false, //8
+    this.truEast = false, //9
+    this.truSouth = false, //10
+    this.truWest = false, //11
+  ]) {
     //generate some default arrows in case they arn't provided and type=1
     if (type == 1 &&
         !north &&
@@ -95,7 +99,7 @@ class NodeType {
         !truEast &&
         !truSouth &&
         !truWest) {
-      var rng = new math.Random();
+      var rng = math.Random();
       int myRandom;
       int prcnt = 50; //percent chance of an arrow
       if (isHex) {
@@ -266,9 +270,9 @@ class NodeType {
 class LightState {
   //LightState consists of a CompleteBoard plus the current state of it's lights
   final CompleteBoard cBoard;
-  List<List<bool>> lightState;
+  late List<List<bool>> lightState;
 
-  LightState(this.cBoard, [List<Node> initialList]) {
+  LightState(this.cBoard, [List<Node> initialList = const []]) {
     lightState = List.generate(
         cBoard.rows,
         (int i) =>
@@ -276,7 +280,7 @@ class LightState {
         growable: false);
 
     //if there's an initialList
-    if (initialList.isNotEmpty && initialList != null) {
+    if (initialList.isNotEmpty) {
       updateNodeList(initialList);
     }
   }
@@ -616,7 +620,7 @@ double getWidth(BuildContext context) {
 }
 
 math.Point getBlastPoint(double sWidth, double sHeight, double radius) {
-  final rng = new math.Random();
+  final rng = math.Random();
   double x;
   double y;
 
@@ -629,5 +633,5 @@ math.Point getBlastPoint(double sWidth, double sHeight, double radius) {
       radius +
       (rng.nextInt(2) * 2 - 1) * (sHeight * .75 * rng.nextDouble());
 
-  return new math.Point(x, y);
+  return math.Point(x, y);
 }

@@ -13,11 +13,11 @@ import 'package:flutter/foundation.dart';
 //void main() => runApp(GameScreen());
 
 class GameScreen extends StatelessWidget {
-  GameScreen();
+  GameScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: myBackground, //color of the OS bars
       body: SafeArea(
         child: LayoutBuilder(builder: (context, constraints) {
@@ -55,9 +55,9 @@ class GameScreen extends StatelessWidget {
             } else {
               return (await showDialog(
                     context: context,
-                    builder: (context) => new AlertDialog(
+                    builder: (context) => AlertDialog(
                       backgroundColor: backgroundLightContrast,
-                      title: new Text(
+                      title: Text(
                         'Exit?',
                         style: TextStyle(
                           fontSize: largeFontSize,
@@ -69,7 +69,7 @@ class GameScreen extends StatelessWidget {
                       actions: <Widget>[
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: new Text(
+                          child: Text(
                             'No',
                             style: TextStyle(
                               fontSize: mediumFontSize,
@@ -84,7 +84,7 @@ class GameScreen extends StatelessWidget {
                             rMod.exitButtonAction(context);
                             //rMod.exitFunction(context);
                           },
-                          child: new Text(
+                          child: Text(
                             'Yes',
                             style: TextStyle(
                               fontSize: mediumFontSize,
@@ -98,7 +98,7 @@ class GameScreen extends StatelessWidget {
             }
           }
 
-          return new WillPopScope(
+          return WillPopScope(
               onWillPop: _onWillPop,
               child: Selector<RoundModel, String>(
                   selector: (buildContext, myModel) => myModel.phase,
@@ -136,7 +136,7 @@ class GameScreen extends StatelessWidget {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                new Padding(
+                                                Padding(
                                                     padding: EdgeInsets.only(
                                                         left: 0,
                                                         top: buttonTopPad,
@@ -178,59 +178,66 @@ class GameScreen extends StatelessWidget {
                                                 SizedBox(
                                                     height: topSize,
                                                     width: levelLabelWidth,
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Padding(
-                                                              padding: EdgeInsets
-                                                                  .fromLTRB(
-                                                                      0,
-                                                                      buttonTopPad *
-                                                                          1,
-                                                                      0,
-                                                                      0),
-                                                              child: Text(
-                                                                rMod.gameType ==
-                                                                        'prog'
-                                                                    ? 'level'
-                                                                    : 'win streak',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontFamily:
-                                                                      'roboto',
-                                                                  fontSize:
-                                                                      smallLabelFontSize,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color:
-                                                                      popupTextColor,
-                                                                ),
-                                                              )),
-                                                          Text(
-                                                            '${rMod.thisLevelOrStreak}',
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                              fontFamily:
-                                                                  'roboto',
-                                                              fontSize: math.min(
-                                                                  topSize * .38,
-                                                                  levelLabelWidth *
-                                                                      .36),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color:
-                                                                  popupTextColor,
-                                                            ),
-                                                          )
-                                                        ])),
+                                                    child: Hero(
+                                                        tag:
+                                                            'level${rMod.thisLevelOrStreak}',
+                                                        child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Padding(
+                                                                  padding: EdgeInsets
+                                                                      .fromLTRB(
+                                                                          0,
+                                                                          buttonTopPad *
+                                                                              1,
+                                                                          0,
+                                                                          0),
+                                                                  child:
+                                                                      DefaultTextStyle(
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontFamily:
+                                                                                'roboto',
+                                                                            fontSize:
+                                                                                smallLabelFontSize,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color:
+                                                                                popupTextColor,
+                                                                          ),
+                                                                          child:
+                                                                              Text(
+                                                                            rMod.gameType == 'prog'
+                                                                                ? 'level'
+                                                                                : 'win streak',
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                          ))),
+                                                              DefaultTextStyle(
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontFamily:
+                                                                        'roboto',
+                                                                    fontSize: math.min(
+                                                                        topSize *
+                                                                            .38,
+                                                                        levelLabelWidth *
+                                                                            .36),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color:
+                                                                        popupTextColor,
+                                                                  ),
+                                                                  child: Text(
+                                                                    '${rMod.thisLevelOrStreak}',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                  ))
+                                                            ]))),
                                               ])))),
                               MiddleScreen(constraints, middleSize, phase,
                                   rMod.lights.cBoard),
@@ -321,7 +328,7 @@ class SelectionsCounter extends StatelessWidget {
       this.buttPad,
       this.gameType,
       this.timeRemaining,
-      this.labelFontSize);
+      this.labelFontSize, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -463,7 +470,7 @@ class BottomButton extends StatelessWidget {
       this.isEnabled,
       this.buttonID,
       this.released,
-      this.bFontSize);
+      this.bFontSize, {Key? key} ): super(key: key);
   @override
   Widget build(BuildContext context) {
     Widget customButton = Padding(
@@ -504,7 +511,7 @@ class MiddleScreen extends StatelessWidget {
   final String phase;
   final CompleteBoard cBoard;
 
-  MiddleScreen(this.constraints, this.middleSize, this.phase, this.cBoard);
+  MiddleScreen(this.constraints, this.middleSize, this.phase, this.cBoard, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -522,7 +529,7 @@ class MiddleScreen extends StatelessWidget {
             cBoard.gameBoard,
             phase,
           ));
-    } else if (!cBoard.isHexBoard) {
+    } else {
       myWidget = SizedBox(
           height: middleSize,
           child: SquareGrid(
@@ -551,7 +558,7 @@ class PolygonGrid extends StatelessWidget {
   final String phase;
 
   PolygonGrid(this.rows, this.columns, this.osWidth, this.osHeight,
-      this.cornerStart, this.spacing, this.gameBoard, this.phase);
+      this.cornerStart, this.spacing, this.gameBoard, this.phase, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -643,11 +650,12 @@ class PolygonGrid extends StatelessWidget {
           } else if (phase == "blastOff") {
             math.Point theBlastPoint =
                 getBlastPoint(osWidth, osHeight, littleRadius);
-            xCoord = theBlastPoint.x;
-            yCoord = theBlastPoint.y;
+            xCoord = theBlastPoint.x.toDouble();
+
+            yCoord = theBlastPoint.y.toDouble();
           }
           gonList.add(
-            new Bulb(radius, littleRadius, spacingSize, i, j, gameBoard[i][j],
+            Bulb(radius, littleRadius, spacingSize, i, j, gameBoard[i][j],
                 flip, 6, xCoord, yCoord, phase),
           );
         }
@@ -675,8 +683,9 @@ class PolygonGrid extends StatelessWidget {
             } else if (phase == "blastOff") {
               math.Point theBlastPoint =
                   getBlastPoint(osWidth, osHeight, littleRadius);
-              xCoord = theBlastPoint.x;
-              yCoord = theBlastPoint.y;
+              xCoord = theBlastPoint.x.toDouble();
+
+              yCoord = theBlastPoint.y.toDouble();
             }
 
             gonList.add(
@@ -686,7 +695,7 @@ class PolygonGrid extends StatelessWidget {
                   curve: phase == 'blastOff' ? bulbCurve : startCurve,
                   top: yCoord,
                   left: xCoord,
-                  child: new CustomPaint(
+                  child: CustomPaint(
                       painter: FacePainter(Offset(littleRadius, littleRadius),
                           littleRadius, gameBoard[i][j], flip))),
             );
@@ -712,7 +721,7 @@ class SquareGrid extends StatelessWidget {
   final String phase;
 
   SquareGrid(this.rows, this.columns, this.osWidth, this.osHeight,
-      this.cornerStart, this.spacing, this.gameBoard, this.phase);
+      this.cornerStart, this.spacing, this.gameBoard, this.phase, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -776,11 +785,12 @@ class SquareGrid extends StatelessWidget {
         } else if (phase == "blastOff") {
           math.Point theBlastPoint =
               getBlastPoint(osWidth, osHeight, bulbSize / 2);
-          xCoord = theBlastPoint.x;
-          yCoord = theBlastPoint.y;
+          xCoord = theBlastPoint.x.toDouble();
+
+          yCoord = theBlastPoint.y.toDouble();
         }
         gonList.add(
-          new Bulb(
+          Bulb(
               math.sqrt(2 * math.pow(bulbSize / 2, 2)),
               bulbSize / 2,
               spacingSize,
@@ -813,8 +823,9 @@ class SquareGrid extends StatelessWidget {
           } else if (phase == "blastOff") {
             math.Point theBlastPoint =
                 getBlastPoint(osWidth, osHeight, bulbSize / 2);
-            xCoord = theBlastPoint.x;
-            yCoord = theBlastPoint.y;
+            xCoord = theBlastPoint.x.toDouble();
+
+            yCoord = theBlastPoint.y.toDouble();
           }
           gonList.add(
             AnimatedPositioned(
@@ -823,7 +834,7 @@ class SquareGrid extends StatelessWidget {
                 curve: phase == 'blastOff' ? bulbCurve : startCurve,
                 top: yCoord,
                 left: xCoord,
-                child: new CustomPaint(
+                child: CustomPaint(
                     painter: FacePainter(Offset(bulbSize / 2, bulbSize / 2),
                         bulbSize / 2, gameBoard[i][j], flip))),
           );
@@ -860,7 +871,7 @@ class Bulb extends StatelessWidget {
       this.sides,
       this.xCoord,
       this.yCoord,
-      this.phase);
+      this.phase, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -890,7 +901,7 @@ class Bulb extends StatelessWidget {
                 duration: Duration(milliseconds: 175),
                 width: calcSize,
                 height: calcSize,
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   /*color: rMod.lights.lightState[row][col]
                       ? shadeB
@@ -1121,11 +1132,12 @@ class FacePainter extends CustomPainter {
 
 class RoundModel extends ChangeNotifier {
   final int thisLevelOrStreak;
-  LightState lights;
-  List<List<bool>> selectState;
+  late LightState lights;
+  late List<List<bool>> selectState;
   List<Node> bannedList = []; //node list of banned nodes
-  List<List<bool>> bannedState;
-  List<List<bool>> clueState; //whether each node is highlighted by a used clue
+  late List<List<bool>> bannedState;
+  late List<List<bool>>
+      clueState; //whether each node is highlighted by a used clue
   bool clueA = false; //whether the first clue is available
   bool clueB = false; //whether the second clue is available
   bool clueARelease = false; //whether clueA has been released
@@ -1133,11 +1145,12 @@ class RoundModel extends ChangeNotifier {
   List<Node> clueList = []; //solution list only used to generate clues
   int selectCount = 0; //count of selected nodes
   String gameType;
-  Timer timer;
+  List<Timer> timerManager =
+      []; //I dont know how ot initialize this any other way
   int timeRemaining = 30; //in half seconds
-  int maxLevel;
-  List<List<double>> leftBlastDist;
-  List<List<double>> topBlastDist;
+  int maxLevel = 100;
+  List<List<double>> leftBlastDist = [[]];
+  List<List<double>> topBlastDist = [[]];
   String phase = 'game'; //what phase the game is in: start/startB/game/blastOff
   bool won = false; //whether the round was won or lost
   //BuildContext initialContext;
@@ -1150,13 +1163,13 @@ class RoundModel extends ChangeNotifier {
     if (gameType == 'roul') {
       phase = 'start';
       //generate simple round for temporary loading screen
-      cr = new CompleteRound(new CompleteBoard()..loadLoadingScreen(), [], []);
+      cr = CompleteRound(CompleteBoard()..loadLoadingScreen(), [], []);
       unpackMyCompleteRound(cr);
       //generate round using an async compute
       generateMyCompleteRound(cr);
       //oneTimeProgressionRoundGen(cr);
     } else if (gameType == 'prog') {
-      Levels mySavedLevels = new Levels();
+      Levels mySavedLevels = Levels();
       maxLevel = mySavedLevels.getMaxLevel();
       cr = mySavedLevels.loadLevel(thisLevelOrStreak - 1);
       unpackMyCompleteRound(cr);
@@ -1170,7 +1183,7 @@ class RoundModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    timer?.cancel();
+    timerManager.forEach((tmr) => tmr.cancel());
     //exitButtonAction(initialContext);
     print('round model disposed.');
     super.dispose();
@@ -1207,7 +1220,7 @@ class RoundModel extends ChangeNotifier {
     bannedList = cr.bannedList;
     clueList = cr.solution;
     //initialize variables
-    lights = new LightState(cr.cBoard, cr.solution);
+    lights = LightState(cr.cBoard, cr.solution);
     selectState = List.generate(
         lights.cBoard.rows,
         (int i) => List.generate(lights.cBoard.columns, (int j) => false,
@@ -1240,8 +1253,8 @@ class RoundModel extends ChangeNotifier {
   }
 
   void startTimer() {
-    const oneSec = const Duration(milliseconds: 500);
-    timer = new Timer.periodic(
+    const oneSec = Duration(milliseconds: 500);
+    timerManager.add(Timer.periodic(
       oneSec,
       (Timer timer) {
         //print('time: $timeRemaining');
@@ -1255,11 +1268,11 @@ class RoundModel extends ChangeNotifier {
         }
         notifyListeners();
       },
-    );
+    ));
   }
 
   void gameOver(BuildContext context) {
-    timer?.cancel();
+    timerManager.forEach((tmr) => tmr.cancel());
     var sMod = Provider.of<ScoreModel>(context, listen: false);
     sMod.exited = false;
     print('exit false');
@@ -1317,7 +1330,7 @@ class RoundModel extends ChangeNotifier {
     if (gameType == 'roul') {
       Navigator.pushReplacementNamed(context, '/transitionScreen');
     } else {
-      Navigator.pushReplacementNamed(context, '/progression');
+      Navigator.pushReplacementNamed(context, '/levelFlashScreen');
     }
   }
 
@@ -1335,7 +1348,7 @@ class RoundModel extends ChangeNotifier {
   }
 
   static List<Node> getRandomNodes(CompleteBoard myBoard) {
-    var rng = new math.Random();
+    var rng = math.Random();
     int x1;
     int y1;
     List<Node> myList = [];
@@ -1367,6 +1380,7 @@ class RoundModel extends ChangeNotifier {
   }
 
   void tap(int row, int col, BuildContext context) {
+    print('$row _ $col');
     if (!bannedState[row][col] &&
         selectCount > (lights.cBoard.selectionsMax - 1) &&
         !selectState[row][col] &&
@@ -1391,7 +1405,7 @@ class RoundModel extends ChangeNotifier {
 
   void triggerClue(String buttonID) {
     if (clueList.length > 0) {
-      var rng = new math.Random();
+      var rng = math.Random();
       int clueIndex = rng.nextInt(clueList.length);
       clueState[clueList[clueIndex].row][clueList[clueIndex].col] = true;
       clueList.removeAt(clueIndex);
@@ -1502,7 +1516,7 @@ class RoundModel extends ChangeNotifier {
           }
         }
       } while (!myBoard.checkExists(thisRow, thisCol));
-      cList.add(new Node(thisRow, thisCol));
+      cList.add(Node(thisRow, thisCol));
     }
     return cList;
   }
@@ -1557,7 +1571,7 @@ class RoundModel extends ChangeNotifier {
         thisCol = 0;
       }
     } while (!myBoard.checkExists(thisRow, thisCol));
-    return new Node(thisRow, thisCol);
+    return Node(thisRow, thisCol);
   }
 
   static Future<CompleteRound> generator(int dummyInt) async {
@@ -1570,11 +1584,11 @@ class RoundModel extends ChangeNotifier {
     List<Node> initialSolution;
     List<List<Node>> roughSolutionList;
     int solutionIndex;
-    var rngNew = new math.Random();
+    var rngNew = math.Random();
     CompleteBoard thisBoard;
     do {
       //generate a game board
-      thisBoard = new CompleteBoard();
+      thisBoard = CompleteBoard();
       thisBoard.reroll();
       //get random initial solution for the board
       initialSolution = getRandomNodes(thisBoard);
@@ -1615,12 +1629,12 @@ class RoundModel extends ChangeNotifier {
             .makeTypeZero();
       }
     }
-    return new CompleteRound(thisBoard, finalSolution, bannedList);
+    return CompleteRound(thisBoard, finalSolution, bannedList);
   }
 }
 
 //****** IDEAS FOR ADDITIONAL FEATURES ***********
-//generate progression levels
+//generate tutorial progression levels
 
 //re: round generation, maybe make it choose new solution nodes if none are arrows and a fair number of arrows exists?
 //way to check a saved round for multiple solutions using existing code?
@@ -1639,6 +1653,9 @@ class RoundModel extends ChangeNotifier {
 //add the back-button question
 //revise menu selection formats, change button font to white, add icons to buttons and timer
 //upload to github
+
+//migrate dart to null safety: see: https://dart.dev/null-safety/migration-guide#migration-tool
+//migrate to new android embedding, see: https://flutter.dev/go/android-project-migration
 
 //** terminal commands **
 //C:\JON\flutter\bin\flutter.bat doctor

@@ -113,7 +113,7 @@ class ScoreModel extends ChangeNotifier {
 
   void updateHighScore(String newName) {
     var i = maxScores - 1;
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     String date = now.toString().substring(0, 10);
 
     while (expertScores[i] < pendingLastWinStreak) {

@@ -10,9 +10,66 @@ import 'package:blinky_bulb/globals.dart';
 
 //import 'dart:ui';
 import 'dart:math' as math;
+import 'dart:async';
+
+class LevelFlashScreen extends StatelessWidget {
+  final int progLevel;
+  LevelFlashScreen(this.progLevel, {Key? key} ): super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize =
+        math.min(getHeight(context) * .05, getWidth(context) * .1);
+    double smallLabelFontSize = fontSize;
+    //double topSize = bottomSize;
+    //double levelLabelWidth = getWidth(context) / 3;
+    double numFontSize = fontSize * 2;
+    Timer(Duration(milliseconds: 900), () {
+      Navigator.pushReplacementNamed(context, '/progression');
+    });
+    return Scaffold(
+        backgroundColor: const Color.fromRGBO(0, 0, 0, .5),
+        body: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Spacer(),
+          Hero(
+              tag: 'level$progLevel',
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: DefaultTextStyle(
+                        style: TextStyle(
+                          fontFamily: 'roboto',
+                          fontSize: smallLabelFontSize,
+                          fontWeight: FontWeight.w600,
+                          color: popupTextColor,
+                        ),
+                        child: Text(
+                          'level',
+                          textAlign: TextAlign.center,
+                        ))),
+                DefaultTextStyle(
+                    style: TextStyle(
+                      fontFamily: 'roboto',
+                      fontSize: numFontSize,
+                      fontWeight: FontWeight.w600,
+                      color: popupTextColor,
+                    ),
+                    child: Text(
+                      //'${rMod.thisLevelOrStreak}',
+                      '$progLevel',
+                      textAlign: TextAlign.center,
+                    ))
+              ])),
+          Spacer(),
+        ])));
+  }
+}
 
 class MyCustomForm extends StatefulWidget {
-  const MyCustomForm();
+  const MyCustomForm( {Key? key} ): super(key: key);
 
   @override
   _MyCustomFormState createState() => _MyCustomFormState();
@@ -20,11 +77,11 @@ class MyCustomForm extends StatefulWidget {
 
 class _MyCustomFormState extends State<MyCustomForm>
     with SingleTickerProviderStateMixin {
-  AnimationController aniController;
-  Animation<double> myAnimation;
+  late AnimationController aniController;
+  late Animation<double> myAnimation;
   bool isEnabled = false;
-  Color currentButtonColor = Colors.grey[500];
-  Color currentButtonTextColor = Colors.grey[600];
+  Color? currentButtonColor = Colors.grey[500];
+  Color? currentButtonTextColor = Colors.grey[600];
 
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
@@ -65,15 +122,18 @@ class _MyCustomFormState extends State<MyCustomForm>
   Widget build(BuildContext context) {
     double bWidth = getWidth(context) * .8;
 
-    double mySpacer = getHeight(context) * .01;
     double textSizer =
-        math.min(getHeight(context) * .01, getWidth(context) * .01);
+        math.min(getHeight(context) * .005, getWidth(context) * .008);
+
     double myHorzSpacer = getWidth(context) * .01;
 
     //font size calcs
-    double largeFontSize = (textSizer + 10) * 2.0;
+    double largeFontSize = (textSizer + 10) * 1.8; //1.8-2
     double mediumFontSize = (textSizer + 10) * 1.2;
     double smallFontSize = (textSizer + 10) * 1.2;
+    double mySpacer = textSizer;
+    double internalPadding = myHorzSpacer * 3;
+    double externalPadding = myHorzSpacer * 5;
 
     List<Widget> highScoreContent = [];
     var sMod = Provider.of<ScoreModel>(context, listen: false);
@@ -138,9 +198,15 @@ class _MyCustomFormState extends State<MyCustomForm>
             padding:
                 EdgeInsets.fromLTRB(myHorzSpacer * 2, 4, myHorzSpacer * 2, 0),
             child: TextField(
-              style: TextStyle(color: popupTextColor),
+              style: TextStyle(
+                color: popupTextColor,
+                //height: 1,
+                fontSize: smallFontSize,
+              ),
               decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
+                isDense: true,
+                contentPadding: EdgeInsets.all(smallFontSize / 2),
+                focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: shadeA, width: 2.0),
                 ),
                 enabledBorder: OutlineInputBorder(
@@ -171,8 +237,7 @@ class _MyCustomFormState extends State<MyCustomForm>
                 } else {
                   isEnabled = false;
                   setState(() {
-                    currentButtonColor =
-                        backgroundLightContrast; //disabledButtonColor;
+                    currentButtonColor = shadeGgrad; //disabledButtonColor;
                     currentButtonTextColor =
                         backgroundContrast; // disabledButtonTextColor;
                   });
@@ -186,17 +251,22 @@ class _MyCustomFormState extends State<MyCustomForm>
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(
-                myHorzSpacer * 2, mySpacer * 4, myHorzSpacer * 2, mySpacer * 2),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(bWidth, mySpacer * 6),
-                primary: currentButtonColor,
-                textStyle: TextStyle(
-                    fontSize: mediumFontSize, color: currentButtonTextColor),
-              ),
-              onPressed: isEnabled ? scoreButtonEvent : null,
-              child: Text("Submit"),
-            )),
+                myHorzSpacer * 2, mySpacer * 2, myHorzSpacer * 2, mySpacer * 4),
+            child: SizedBox(
+                height: mediumFontSize * 1.6,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(bWidth, mediumFontSize * 1.5),
+                    //padding: EdgeInsets.all(smallFontSize / 2),
+                    primary: currentButtonColor,
+                    onSurface: currentButtonColor,
+                    textStyle: TextStyle(
+                        fontSize: mediumFontSize,
+                        color: currentButtonTextColor),
+                  ),
+                  onPressed: isEnabled ? scoreButtonEvent : null,
+                  child: const Text("Submit"),
+                ))),
       ];
     } else if (sMod.winStreak == 0 &&
         !sMod.checkHighScore(sMod.pendingLastWinStreak)) {
@@ -331,13 +401,15 @@ class _MyCustomFormState extends State<MyCustomForm>
       return false;
     }
 
-    return new WillPopScope(
+    return WillPopScope(
         onWillPop: _onBackPressed,
         child: Scaffold(
+            //resizeToAvoidBottomInset: false,
             backgroundColor: const Color.fromRGBO(0, 0, 0, .5),
             body: Center(
                 child: Padding(
-                    padding: const EdgeInsets.all(40.0),
+                    padding: EdgeInsets.fromLTRB(
+                        externalPadding, 0, externalPadding, 0),
                     child: Material(
                         color: Colors.transparent,
                         child: FadeTransition(
@@ -349,7 +421,8 @@ class _MyCustomFormState extends State<MyCustomForm>
                                         borderRadius:
                                             BorderRadius.circular(15.0))),
                                 child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: EdgeInsets.fromLTRB(
+                                        internalPadding, 0, internalPadding, 0),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: highScoreContent,
