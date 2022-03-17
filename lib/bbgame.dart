@@ -13,7 +13,7 @@ import 'package:flutter/foundation.dart';
 //void main() => runApp(GameScreen());
 
 class GameScreen extends StatelessWidget {
-  GameScreen({Key? key}) : super(key: key);
+  const GameScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class GameScreen extends StatelessWidget {
                     return AnimatedContainer(
                         duration: explodeDuration,
                         color: (phase == 'game') ? shadeB : myBackground,
-                        key: Key('main'),
+                        key: const Key('main'),
                         curve: Curves.easeInCubic,
                         onEnd: () {
                           if (rMod.phase == 'blastOff') {
@@ -159,7 +159,7 @@ class GameScreen extends StatelessWidget {
                                                           rMod.exitButtonAction(
                                                               context);
                                                         },
-                                                        child: Text('Exit'))),
+                                                        child: const Text('Exit'))),
                                                 Consumer<RoundModel>(builder:
                                                     (context, upMod, child) {
                                                   return SelectionsCounter(
@@ -320,7 +320,7 @@ class SelectionsCounter extends StatelessWidget {
   final double labelFontSize;
 
   static const double spacerPercent = 0.1; //percent of diameter
-  SelectionsCounter(
+  const SelectionsCounter(
       this.height,
       this.width,
       this.selectionsMax,
@@ -344,12 +344,12 @@ class SelectionsCounter extends StatelessWidget {
         padding:
             EdgeInsets.only(top: clockHeight * .02, bottom: clockHeight * .02),
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           width: widthFactor,
           height: clockHeight,
           decoration: BoxDecoration(
             boxShadow: [
-              BoxShadow(
+              const BoxShadow(
                 color: myBackground,
               ),
               BoxShadow(
@@ -461,7 +461,7 @@ class BottomButton extends StatelessWidget {
   final bool released;
   final double bFontSize;
   static const double spacerPercent = 0.1; //percent of diameter
-  BottomButton(
+  const BottomButton(
       this.width,
       this.buttPad,
       this.runFunction,
@@ -484,7 +484,7 @@ class BottomButton extends StatelessWidget {
               minimumSize: Size.fromWidth(width),
               textStyle: TextStyle(fontSize: bFontSize, color: shadeE),
               side: isEnabled
-                  ? BorderSide(width: 1, color: shadeE)
+                  ? const BorderSide(width: 1, color: shadeE)
                   : BorderSide(width: 1, color: backgroundLightContrast),
             ),
             onPressed: isEnabled
@@ -511,7 +511,7 @@ class MiddleScreen extends StatelessWidget {
   final String phase;
   final CompleteBoard cBoard;
 
-  MiddleScreen(this.constraints, this.middleSize, this.phase, this.cBoard, {Key? key} ): super(key: key);
+  const MiddleScreen(this.constraints, this.middleSize, this.phase, this.cBoard, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -557,12 +557,12 @@ class PolygonGrid extends StatelessWidget {
   final List<List<NodeType>> gameBoard; //type of bulbs
   final String phase;
 
-  PolygonGrid(this.rows, this.columns, this.osWidth, this.osHeight,
+  const PolygonGrid(this.rows, this.columns, this.osWidth, this.osHeight,
       this.cornerStart, this.spacing, this.gameBoard, this.phase, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print("build: HexGrid");
+    print('build: HexGrid');
     double sWidth; //grid space width
     double sHeight; //grid space height
     double widthSlack;
@@ -574,7 +574,7 @@ class PolygonGrid extends StatelessWidget {
           color: (phase == 'blastOff') ? Colors.transparent : myBackground,
           duration: pieceFade,
           curve: pieceCurve,
-          key: Key('middle'))
+          key: const Key('middle'))
     ];
     bool flip = false;
     double radius;
@@ -647,7 +647,7 @@ class PolygonGrid extends StatelessWidget {
           if (phase == 'start' || phase == 'startB') {
             xCoord = osWidth / 2 - littleRadius;
             yCoord = osHeight / 2 - littleRadius;
-          } else if (phase == "blastOff") {
+          } else if (phase == 'blastOff') {
             math.Point theBlastPoint =
                 getBlastPoint(osWidth, osHeight, littleRadius);
             xCoord = theBlastPoint.x.toDouble();
@@ -680,7 +680,7 @@ class PolygonGrid extends StatelessWidget {
             if (phase == 'start' || phase == 'startB') {
               xCoord = osWidth / 2 - littleRadius;
               yCoord = osHeight / 2 - littleRadius;
-            } else if (phase == "blastOff") {
+            } else if (phase == 'blastOff') {
               math.Point theBlastPoint =
                   getBlastPoint(osWidth, osHeight, littleRadius);
               xCoord = theBlastPoint.x.toDouble();
@@ -720,12 +720,12 @@ class SquareGrid extends StatelessWidget {
   final List<List<NodeType>> gameBoard; //type of bulbs
   final String phase;
 
-  SquareGrid(this.rows, this.columns, this.osWidth, this.osHeight,
+  const SquareGrid(this.rows, this.columns, this.osWidth, this.osHeight,
       this.cornerStart, this.spacing, this.gameBoard, this.phase, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print("build: SquareGrid");
+    print('build: SquareGrid');
     double sWidth; //grid space width
     double sHeight; //grid space height
     double widthSlack;
@@ -735,7 +735,7 @@ class SquareGrid extends StatelessWidget {
           color: (phase == 'blastOff') ? Colors.transparent : myBackground,
           duration: pieceFade,
           curve: pieceCurve,
-          key: Key('middle'))
+          key: const Key('middle'))
     ];
     bool flip = false;
 
@@ -782,7 +782,7 @@ class SquareGrid extends StatelessWidget {
         if (phase == 'start' || phase == 'startB') {
           xCoord = osWidth / 2 - (bulbSize / 2);
           yCoord = osHeight / 2 - (bulbSize / 2);
-        } else if (phase == "blastOff") {
+        } else if (phase == 'blastOff') {
           math.Point theBlastPoint =
               getBlastPoint(osWidth, osHeight, bulbSize / 2);
           xCoord = theBlastPoint.x.toDouble();
@@ -820,7 +820,7 @@ class SquareGrid extends StatelessWidget {
           if (phase == 'start' || phase == 'startB') {
             xCoord = osWidth / 2 - (bulbSize / 2);
             yCoord = osHeight / 2 - (bulbSize / 2);
-          } else if (phase == "blastOff") {
+          } else if (phase == 'blastOff') {
             math.Point theBlastPoint =
                 getBlastPoint(osWidth, osHeight, bulbSize / 2);
             xCoord = theBlastPoint.x.toDouble();
@@ -860,7 +860,7 @@ class Bulb extends StatelessWidget {
   final double yCoord;
   final String phase;
 
-  Bulb(
+  const Bulb(
       this.radius,
       this.littleRadius,
       this.spacingSize,
@@ -898,7 +898,7 @@ class Bulb extends StatelessWidget {
                 //}
               },
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 175),
+                duration: const Duration(milliseconds: 175),
                 width: calcSize,
                 height: calcSize,
                 decoration: BoxDecoration(
@@ -1005,7 +1005,7 @@ class PolygonPainter extends CustomPainter {
 
 //FacePaint Widget
 class FacePainter extends CustomPainter {
-  static const int SIDES = 6;
+  static const int sides = 6;
   final double radius;
   final Offset center;
   final NodeType nodeType;
@@ -1024,13 +1024,13 @@ class FacePainter extends CustomPainter {
   }
 
   Path createPointerPath(NodeType nodeType) {
-    final double spacing = 0.02; //width of back two points of triangle
-    final double pointerDepth = 0.6; //back two points of triangle
-    final double lineWidth = 0.14;
-    final double startDepth = .7; //starting point behind circle center
-    final double extension = 1; //front point dist out of circle
+    const double spacing = 0.02; //width of back two points of triangle
+    const double pointerDepth = 0.6; //back two points of triangle
+    const double lineWidth = 0.14;
+    const double startDepth = .7; //starting point behind circle center
+    const double extension = 1; //front point dist out of circle
     final path = Path();
-    var angle = (math.pi * 2) / SIDES;
+    var angle = (math.pi * 2) / sides;
     double x;
     double y;
 
@@ -1183,7 +1183,9 @@ class RoundModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    timerManager.forEach((tmr) => tmr.cancel());
+    //timerManager.forEach((tmr) => tmr.cancel());
+    for (var tmr in timerManager){tmr.cancel();}
+
     //exitButtonAction(initialContext);
     print('round model disposed.');
     super.dispose();
@@ -1198,15 +1200,15 @@ class RoundModel extends ChangeNotifier {
 
   generateMyCompleteRound(CompleteRound cr) async {
     cr = await compute(generator, 1); //had to pass a parameter..
-    Timer(Duration(milliseconds: 300), () {
+    Timer(const Duration(milliseconds: 300), () {
       //minimum time for loading screen
       unpackMyCompleteRound(cr);
-      phase = "startB"; //causes the notifyListeners to trigger rebuild
+      phase = 'startB'; //causes the notifyListeners to trigger rebuild
       notifyListeners();
-      Timer(Duration(milliseconds: 100), () {
-        phase = "game";
+      Timer(const Duration(milliseconds: 100), () {
+        phase = 'game';
         notifyListeners();
-        Timer(Duration(milliseconds: 250), () {
+        Timer(const Duration(milliseconds: 250), () {
           startTimer();
         });
       });
@@ -1248,8 +1250,11 @@ class RoundModel extends ChangeNotifier {
             List.generate(lights.cBoard.columns, (int j) => 0, growable: false),
         growable: false);
     //calc bannedState from bannedList
-    bannedList
-        .forEach((element) => bannedState[element.row][element.col] = true);
+    //bannedList
+    //    .forEach((element) => bannedState[element.row][element.col] = true);
+    for (var element in bannedList){
+      bannedState[element.row][element.col] = true;
+    }
   }
 
   void startTimer() {
@@ -1272,7 +1277,8 @@ class RoundModel extends ChangeNotifier {
   }
 
   void gameOver(BuildContext context) {
-    timerManager.forEach((tmr) => tmr.cancel());
+    //timerManager.forEach((tmr) => tmr.cancel());
+    for (var tmr in timerManager){tmr.cancel();}
     var sMod = Provider.of<ScoreModel>(context, listen: false);
     sMod.exited = false;
     print('exit false');
@@ -1596,8 +1602,10 @@ class RoundModel extends ChangeNotifier {
       roughSolutionList = solver(thisBoard, thisBoard.selectionsMax,
           LightState(thisBoard, initialSolution));
       if (testingMsgs) {
-        roughSolutionList
-            .forEach((element) => printNodeList('All Solutions', element));
+        //roughSolutionList.forEach((element) => printNodeList('All Solutions', element));
+        for(var sltn in roughSolutionList){
+          printNodeList('All Solutions', sltn);
+        }
       }
       if (testingMsgs) {
         print(

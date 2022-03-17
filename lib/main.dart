@@ -33,8 +33,8 @@ void main() {
           primaryColor: shadeF, //not used anywhere(?)
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
-            textStyle: TextStyle(fontFamily: 'roboto'),
-            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+            textStyle: const TextStyle(fontFamily: 'roboto'),
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(80)),
             primary: shadeA, //button background color
@@ -43,11 +43,11 @@ void main() {
           )),
           textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-            textStyle: TextStyle(fontFamily: 'roboto', color: shadeE),
-            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+            textStyle: const TextStyle(fontFamily: 'roboto', color: shadeE),
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(80),
-                side: BorderSide(width: 1, color: shadeA)),
+                side: const BorderSide(width: 1, color: shadeA)),
             // primary: shadeA,
             onSurface: myWhite, //Affects the text color when disabled
           )),
@@ -57,7 +57,7 @@ void main() {
         initialRoute: '/',
         routes: {
           '/': (context) {
-            return MenuScreen();
+            return const MenuScreen();
           },
           '/roulette': (context) {
             var sMod = Provider.of<ScoreModel>(context, listen: false);
@@ -65,7 +65,7 @@ void main() {
                 //should be lower in tree?
                 create: (context) =>
                     RoundModel(context, 'roul', sMod.winStreak),
-                child: GameScreen());
+                child: const GameScreen());
           },
           '/progression': (context) {
             var sMod = Provider.of<ScoreModel>(context, listen: false);
@@ -73,11 +73,11 @@ void main() {
                 //should be lower in tree?
                 create: (context) => RoundModel(context, 'prog',
                     sMod.progressionLevel), //sMod.progressionLevel),
-                child: GameScreen());
+                child: const GameScreen());
           },
-          '/howToPlay': (context) => HowToScreen(),
-          '/highScores': (context) => ScoreScreen(),
-          '/transitionScreen': (context) => MyCustomForm(),
+          '/howToPlay': (context) => const HowToScreen(),
+          '/highScores': (context) => const ScoreScreen(),
+          '/transitionScreen': (context) => const MyCustomForm(),
           '/levelFlashScreen': (context) {
             var sMod = Provider.of<ScoreModel>(context, listen: false);
             return LevelFlashScreen(sMod.progressionLevel);
@@ -87,7 +87,7 @@ void main() {
 }
 
 class MenuScreen extends StatelessWidget {
-  MenuScreen({Key? key} ): super(key: key);
+  const MenuScreen({Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class MenuScreen extends StatelessWidget {
             backgroundColor: myBackground,
             resizeToAvoidBottomInset: false,
             body: LayoutBuilder(builder: (context, constraints) {
-              final int buttonsCount = 4;
+              const int buttonsCount = 4;
               //title measurements
               double titleHeight;
               double titleWidth;
@@ -289,7 +289,7 @@ class MenuScreen extends StatelessWidget {
                           ])));
 
               Widget myTitle = Center(
-                  child: Container(
+                  child: SizedBox(
                       height: titleHeight,
                       width: titleWidth,
                       child: Text(
@@ -351,7 +351,7 @@ class MenuScreen extends StatelessWidget {
 }
 
 class HowToScreen extends StatelessWidget {
-  HowToScreen({Key? key} ): super(key: key);
+  const HowToScreen({Key? key} ): super(key: key);
   @override
   Widget build(BuildContext context) {
     print('ScoreScreen Built');
@@ -406,19 +406,19 @@ class HowToScreen extends StatelessWidget {
                 'Blinky Bulb is a logic puzzle game, a twist on the classic game Lights Out.',
                 style: howToText,
               ),
-              Text(''),
+                  const Text(''),
               //Spacer(),
               Text(
                 'Select a bulb to toggle a pattern of bulbs on or off. To win, select the correct combination of bulbs such that all the bulbs are toggled off. Each round has a limit on the number of bulbs that can be selected.',
                 style: howToText,
               ),
               //Spacer(),
-              Text(''),
+                  const Text(''),
               Text(
                 'Solve puzzles with no time limit in PROGRESSION, or challenge yourself by solving procedurally generated puzzles in under 30 seconds in ROULETTE.',
                 style: howToText,
               ),
-              Text(''),
+                  const Text(''),
               Text(
                 'PROGRESSION starts out easy and serves as a tutorial, so you may want to begin there.',
                 style: howToText,
@@ -442,7 +442,7 @@ class HowToScreen extends StatelessWidget {
             color: myWhite,
           ),
         ),
-        icon: Icon(Icons.arrow_back, color: myWhite),
+        icon: const Icon(Icons.arrow_back, color: myWhite),
         backgroundColor: shadeA,
       ),
     ));
@@ -450,7 +450,7 @@ class HowToScreen extends StatelessWidget {
 }
 
 class ScoreScreen extends StatelessWidget {
-  ScoreScreen({Key? key} ): super(key: key);
+  const ScoreScreen({Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -474,11 +474,11 @@ class ScoreScreen extends StatelessWidget {
     myDates = sMod.expertDates;
     //print('@@@@@ this win streak: $thisWinStreak');
     var myBoxDecoration;
-    var myRegularBoxDecoration = BoxDecoration();
+    var myRegularBoxDecoration = const BoxDecoration();
 
     var mySpecialBoxDecoration = BoxDecoration(
       boxShadow: [
-        BoxShadow(
+        const BoxShadow(
           color: shadeB,
         ),
         BoxShadow(
@@ -500,7 +500,7 @@ class ScoreScreen extends StatelessWidget {
       fontStyle: FontStyle.italic,
       color: popupTextColor,
       fontFamily: 'Inconsolata',
-      fontFeatures: [FontFeature.tabularFigures()],
+      fontFeatures: const [FontFeature.tabularFigures()],
     );
 
     List<Widget> scoreList = [];
@@ -524,12 +524,12 @@ class ScoreScreen extends StatelessWidget {
                   '${((i + 1).toString() + '. ').padRight(4, ' ')}${myNames[i].padRight(10, ' ')}',
                   style: scoreTextStyleInput,
                 )),
-            Spacer(),
+            const Spacer(),
             Text(
               '${myDates[i]}',
               style: scoreTextStyleInput,
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
                 padding: EdgeInsets.only(right: sideSpace / 2),
                 child: Text(
@@ -572,18 +572,18 @@ class ScoreScreen extends StatelessWidget {
         Padding(
             padding: EdgeInsets.only(left: sideSpace, right: sideSpace),
             child: Row(children: [
-              Text('          '),
+              const Text('          '),
               Text(
                 'Name',
                 style: headerTextStyle,
               ),
-              Text(''),
-              Spacer(),
+              const Text(''),
+              const Spacer(),
               Text(
                 'Date',
                 style: headerTextStyle,
               ),
-              Spacer(),
+              const Spacer(),
               Text(
                 'Score',
                 style: headerTextStyle,
@@ -611,7 +611,7 @@ class ScoreScreen extends StatelessWidget {
             color: myWhite,
           ),
         ),
-        icon: Icon(Icons.arrow_back, color: myWhite),
+        icon: const Icon(Icons.arrow_back, color: myWhite),
         backgroundColor: shadeA,
       ),
     ));

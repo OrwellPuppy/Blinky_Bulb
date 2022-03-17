@@ -14,7 +14,7 @@ import 'dart:async';
 
 class LevelFlashScreen extends StatelessWidget {
   final int progLevel;
-  LevelFlashScreen(this.progLevel, {Key? key} ): super(key: key);
+  const LevelFlashScreen(this.progLevel, {Key? key} ): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class LevelFlashScreen extends StatelessWidget {
     //double topSize = bottomSize;
     //double levelLabelWidth = getWidth(context) / 3;
     double numFontSize = fontSize * 2;
-    Timer(Duration(milliseconds: 900), () {
+    Timer(const Duration(milliseconds: 900), () {
       Navigator.pushReplacementNamed(context, '/progression');
     });
     return Scaffold(
@@ -32,13 +32,13 @@ class LevelFlashScreen extends StatelessWidget {
         body: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Spacer(),
+                  const Spacer(),
           Hero(
               tag: 'level$progLevel',
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: DefaultTextStyle(
                         style: TextStyle(
                           fontFamily: 'roboto',
@@ -46,7 +46,7 @@ class LevelFlashScreen extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: popupTextColor,
                         ),
-                        child: Text(
+                        child: const Text(
                           'level',
                           textAlign: TextAlign.center,
                         ))),
@@ -63,7 +63,7 @@ class LevelFlashScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ))
               ])),
-          Spacer(),
+          const Spacer(),
         ])));
   }
 }
@@ -100,11 +100,11 @@ class _MyCustomFormState extends State<MyCustomForm>
     myController.text = '';
     super.initState();
     aniController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 750));
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 750));
     myAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: aniController,
-        curve: Interval(
+        curve: const Interval(
           0.01,
           1,
           curve: Curves.easeOutQuad,
@@ -159,7 +159,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           padding: EdgeInsets.fromLTRB(
               myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 1),
           child: Text(
-            "YOU SET A HIGH SCORE!",
+            'YOU SET A HIGH SCORE!',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: shadeB,
@@ -173,8 +173,8 @@ class _MyCustomFormState extends State<MyCustomForm>
                 myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
             child: Text(
               sMod.exited
-                  ? "Forfeited. Final win streak: ${sMod.pendingLastWinStreak}"
-                  : "Out of time. Final win streak: ${sMod.pendingLastWinStreak}",
+                  ? 'Forfeited. Final win streak: ${sMod.pendingLastWinStreak}'
+                  : 'Out of time. Final win streak: ${sMod.pendingLastWinStreak}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: popupTextColor,
@@ -185,7 +185,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           padding:
               EdgeInsets.fromLTRB(myHorzSpacer, mySpacer * 1, myHorzSpacer, 0),
           child: Text(
-            "Enter name for scoreboard:",
+            'Enter name for scoreboard:',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: popupTextColor,
@@ -209,11 +209,11 @@ class _MyCustomFormState extends State<MyCustomForm>
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: shadeA, width: 2.0),
                 ),
-                enabledBorder: OutlineInputBorder(
+                enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: shadeA, width: 2.0),
                 ),
                 counterStyle: TextStyle(color: popupTextColor),
-                border: OutlineInputBorder(
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(
                     width: 1.0,
                     color: shadeA,
@@ -265,7 +265,7 @@ class _MyCustomFormState extends State<MyCustomForm>
                         color: currentButtonTextColor),
                   ),
                   onPressed: isEnabled ? scoreButtonEvent : null,
-                  child: const Text("Submit"),
+                  child: const Text('Submit'),
                 ))),
       ];
     } else if (sMod.winStreak == 0 &&
@@ -276,7 +276,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           padding: EdgeInsets.fromLTRB(
               myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 1),
           child: Text(
-            "YOU LOSE",
+            'YOU LOSE',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: popupTextColor,
@@ -289,7 +289,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           padding: EdgeInsets.fromLTRB(
               myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
           child: Text(
-            "You solved the puzzle, but not fast enough.",
+            'You solved the puzzle, but not fast enough.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: smallFontSize,
@@ -301,7 +301,7 @@ class _MyCustomFormState extends State<MyCustomForm>
         Padding(
           padding: EdgeInsets.fromLTRB(
               myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
-          child: Text("final win streak: ${sMod.pendingLastWinStreak}",
+          child: Text('final win streak: ${sMod.pendingLastWinStreak}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: smallFontSize,
@@ -319,7 +319,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             Navigator.of(context).pop();
             //Navigator.pop(context);
           },
-          child: Text('Exit To Menu'),
+          child: const Text('Exit To Menu'),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -332,7 +332,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           onPressed: () {
             Navigator.pushReplacementNamed(context, '/roulette');
           },
-          child: Text('Play Again'),
+          child: const Text('Play Again'),
         ),
       ];
     } else {
@@ -342,7 +342,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           padding: EdgeInsets.fromLTRB(
               myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 1),
           child: Text(
-            "YOU WIN!",
+            'YOU WIN!',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: shadeB,
@@ -355,7 +355,7 @@ class _MyCustomFormState extends State<MyCustomForm>
         Padding(
           padding: EdgeInsets.fromLTRB(
               myHorzSpacer, mySpacer * 3, myHorzSpacer, mySpacer * 3),
-          child: Text("win streak: ${sMod.winStreak}",
+          child: Text('win streak: ${sMod.winStreak}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: smallFontSize,
@@ -374,7 +374,7 @@ class _MyCustomFormState extends State<MyCustomForm>
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Save And Exit'),
+          child: const Text('Save And Exit'),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -387,7 +387,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             Navigator.pushReplacementNamed(context, '/roulette');
             //Navigator.pop(context);
           },
-          child: Text('Play Next Round'),
+          child: const Text('Play Next Round'),
         ),
       ];
     }

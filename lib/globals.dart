@@ -322,8 +322,11 @@ class LightState {
   }
 
   updateNodeList(List<Node> myNodeList) {
-    myNodeList.forEach((element) =>
-        _updateLightStateFromBulbList(_getBulbList(element.row, element.col)));
+    //myNodeList.forEach((element) =>
+    //    _updateLightStateFromBulbList(_getBulbList(element.row, element.col)));
+    for (var myNode in myNodeList){
+      _updateLightStateFromBulbList(_getBulbList(myNode.row, myNode.col));
+    }
   }
 
   updateNode(int row, int col) {
@@ -491,12 +494,12 @@ class CompleteRound {
   CompleteRound(this.cBoard, this.solution, this.bannedList);
 
   void printValues() {
-    print("*******************");
+    print('*******************');
     //cBoard.printValues();
     print(
         'CompleteRound(${cBoard.getValues()}, ${nodeListValues(solution)}, ${nodeListValues(bannedList)})');
     //print(solution);
-    print("*******************");
+    print('*******************');
   }
 
 //CompleteRound (top level)
@@ -507,13 +510,14 @@ class CompleteRound {
     print('solutionP.add(${compactNodeListValues(solution)});');
     print('bannedP.add(${compactNodeListValues(bannedList)});');
     //print(solution);
-    print("//*******************");
+    print('//*******************');
   }
 }
 
 String nodeListValues(List<Node> nList) {
   String values = '[';
-  nList.forEach((element) => values += '${element.getValues()},');
+  //nList.forEach((element) => values += '${element.getValues()},');
+  for (var element in nList){ values += '${element.getValues()},';}
   if (values.length > 2 &&
       values.substring(values.length - 2, values.length - 1) == ',') {
     values = values.substring(0, values.length - 2);
@@ -525,7 +529,8 @@ String nodeListValues(List<Node> nList) {
 //node list for solution and banned nodes
 String compactNodeListValues(List<Node> nList) {
   String values = '[';
-  nList.forEach((element) => values += '${element.getCompact()}');
+  for (var element in nList){values += element.getCompact();}
+  //nList.forEach((element) => values += '${element.getCompact()}');
   if (values.length >= 2 &&
       values.substring(values.length - 2, values.length - 0) == ', ') {
     values = values.substring(0, values.length - 2);
