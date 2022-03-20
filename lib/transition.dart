@@ -28,7 +28,7 @@ class LevelFlashScreen extends StatelessWidget {
       Navigator.pushReplacementNamed(context, '/progression');
     });
     return Scaffold(
-        backgroundColor: const Color.fromRGBO(0, 0, 0, .5),
+        backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
         body: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -123,17 +123,20 @@ class _MyCustomFormState extends State<MyCustomForm>
     double bWidth = getWidth(context) * .8;
 
     double textSizer =
-        math.min(getHeight(context) * .005, getWidth(context) * .008);
+    (math.min(getHeight(context), getWidth(context))+(getHeight(context) + getWidth(context))/2)*.0036;
 
     double myHorzSpacer = getWidth(context) * .01;
+    double myWidth = getWidth(context);
 
     //font size calcs
     double largeFontSize = (textSizer + 10) * 1.8; //1.8-2
     double mediumFontSize = (textSizer + 10) * 1.2;
     double smallFontSize = (textSizer + 10) * 1.2;
     double mySpacer = textSizer;
+
+
     double internalPadding = myHorzSpacer * 3;
-    double externalPadding = myHorzSpacer * 5;
+    double externalPadding = myWidth*.05;
 
     List<Widget> highScoreContent = [];
     var sMod = Provider.of<ScoreModel>(context, listen: false);
@@ -228,7 +231,7 @@ class _MyCustomFormState extends State<MyCustomForm>
               keyboardAppearance: Brightness.dark,
               maxLines: 1,
               onChanged: (myChange) {
-                if (myController.text.length > 0) {
+                if (myController.text.isNotEmpty) {
                   isEnabled = true;
                   setState(() {
                     currentButtonColor = shadeA;
@@ -253,7 +256,7 @@ class _MyCustomFormState extends State<MyCustomForm>
             padding: EdgeInsets.fromLTRB(
                 myHorzSpacer * 2, mySpacer * 2, myHorzSpacer * 2, mySpacer * 4),
             child: SizedBox(
-                height: mediumFontSize * 1.6,
+                height: mediumFontSize * 2,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(bWidth, mediumFontSize * 1.5),
@@ -311,7 +314,7 @@ class _MyCustomFormState extends State<MyCustomForm>
         TextButton(
           style: TextButton.styleFrom(
               padding: EdgeInsets.fromLTRB(
-                  myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+                  myHorzSpacer, mySpacer * 2, myHorzSpacer, mySpacer * 2),
               minimumSize: Size.fromHeight(mySpacer * 4),
               textStyle: TextStyle(
                   fontSize: mediumFontSize, fontWeight: FontWeight.w700)),
@@ -324,7 +327,7 @@ class _MyCustomFormState extends State<MyCustomForm>
         ElevatedButton(
           style: ElevatedButton.styleFrom(
               padding: EdgeInsets.fromLTRB(
-                  myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+                  myHorzSpacer, mySpacer * 2, myHorzSpacer, mySpacer * 2),
               elevation: 0,
               minimumSize: Size.fromHeight(mySpacer * 4),
               textStyle: TextStyle(
@@ -369,26 +372,29 @@ class _MyCustomFormState extends State<MyCustomForm>
             minimumSize: Size.fromHeight(mySpacer * 4),
             textStyle: TextStyle(fontSize: mediumFontSize),
             padding: EdgeInsets.fromLTRB(
-                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+                0, mySpacer * 2, 0, mySpacer * 2),
           ),
           onPressed: () {
             Navigator.of(context).pop();
           },
           child: const Text('Save And Exit'),
         ),
-        ElevatedButton(
+        Padding(
+    padding: EdgeInsets.fromLTRB(
+    0, mySpacer * 1, 0, mySpacer * 1),
+          child:ElevatedButton(
           style: ElevatedButton.styleFrom(
             minimumSize: Size.fromHeight(mySpacer * 4),
             textStyle: TextStyle(fontSize: mediumFontSize),
             padding: EdgeInsets.fromLTRB(
-                myHorzSpacer, mySpacer * 1, myHorzSpacer, mySpacer * 1),
+                0, mySpacer * 2, 0, mySpacer * 2),
           ),
           onPressed: () {
             Navigator.pushReplacementNamed(context, '/roulette');
             //Navigator.pop(context);
           },
           child: const Text('Play Next Round'),
-        ),
+          )),
       ];
     }
 
@@ -405,7 +411,7 @@ class _MyCustomFormState extends State<MyCustomForm>
         onWillPop: _onBackPressed,
         child: Scaffold(
             //resizeToAvoidBottomInset: false,
-            backgroundColor: const Color.fromRGBO(0, 0, 0, .5),
+            backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
             body: Center(
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(

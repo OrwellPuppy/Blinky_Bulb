@@ -39,8 +39,8 @@ class GameScreen extends StatelessWidget {
           double clueButtonWidth = constraints.maxWidth * .2;
           double sidePads = constraints.maxWidth * .02;
           double smallLabelFontSize =
-              math.min(levelLabelWidth, topSize * 2) * .16;
-
+              math.min(levelLabelWidth, topSize * 1.5) * .17;
+          double buttonFontSize = smallLabelFontSize*1.35;
           //text size for 'back button' popup
           double textSizer =
               math.min(getHeight(context) * .01, getWidth(context) * .01);
@@ -150,7 +150,7 @@ class GameScreen extends StatelessWidget {
                                                                   exitButtonWidth),
                                                           textStyle: TextStyle(
                                                               fontSize:
-                                                                  topSize / 4,
+                                                              buttonFontSize,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w400),
@@ -220,11 +220,7 @@ class GameScreen extends StatelessWidget {
                                                                       TextStyle(
                                                                     fontFamily:
                                                                         'roboto',
-                                                                    fontSize: math.min(
-                                                                        topSize *
-                                                                            .38,
-                                                                        levelLabelWidth *
-                                                                            .36),
+                                                                    fontSize: smallLabelFontSize*1.5,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w600,
@@ -263,7 +259,7 @@ class GameScreen extends StatelessWidget {
                                                   upMod.clueA,
                                                   'clueA',
                                                   upMod.clueARelease,
-                                                  topSize / 4),
+                                                  buttonFontSize),
                                               Padding(
                                                   padding: EdgeInsets.fromLTRB(
                                                       0,
@@ -297,7 +293,7 @@ class GameScreen extends StatelessWidget {
                                                   upMod.clueB,
                                                   'clueB',
                                                   upMod.clueBRelease,
-                                                  topSize / 4),
+                                                  buttonFontSize),
                                             ]);
                                       })))
                             ])));
@@ -334,7 +330,7 @@ class SelectionsCounter extends StatelessWidget {
   Widget build(BuildContext context) {
     double clockHeight = (height - buttPad * 0) * .6;
     double widthFactor =
-        math.min(width * (1 - spacerPercent), clockHeight * 1.8);
+        math.min(width * (1 - spacerPercent), clockHeight * 2.5);
     bool odd;
     bool ending;
     odd = timeRemaining % 2 == 1;
@@ -366,7 +362,9 @@ class SelectionsCounter extends StatelessWidget {
               child: timeRemaining <= 0
                   ? Text(
                       'OUT OF TIME',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
+
                         fontFamily: 'roboto',
                         fontSize: labelFontSize,
                         //fontWeight: FontWeight.w600,
@@ -1147,7 +1145,7 @@ class RoundModel extends ChangeNotifier {
   String gameType;
   List<Timer> timerManager =
       []; //I dont know how ot initialize this any other way
-  int timeRemaining = 30; //in half seconds
+  int timeRemaining = 60; //in half seconds
   int maxLevel = 100;
   List<List<double>> leftBlastDist = [[]];
   List<List<double>> topBlastDist = [[]];
@@ -1171,6 +1169,7 @@ class RoundModel extends ChangeNotifier {
     } else if (gameType == 'prog') {
       Levels mySavedLevels = Levels();
       maxLevel = mySavedLevels.getMaxLevel();
+      print('max level: $maxLevel');
       cr = mySavedLevels.loadLevel(thisLevelOrStreak - 1);
       unpackMyCompleteRound(cr);
       notifyListeners();
@@ -1410,7 +1409,7 @@ class RoundModel extends ChangeNotifier {
   }
 
   void triggerClue(String buttonID) {
-    if (clueList.length > 0) {
+    if (clueList.isNotEmpty) {
       var rng = math.Random();
       int clueIndex = rng.nextInt(clueList.length);
       clueState[clueList[clueIndex].row][clueList[clueIndex].col] = true;
@@ -1613,7 +1612,7 @@ class RoundModel extends ChangeNotifier {
       }
       //loop until solutions require max selection
     } while (isBadBoard(roughSolutionList, thisBoard.selectionsMax) ||
-        (roughSolutionList.length == 0));
+        (roughSolutionList.isEmpty));
     if (roughSolutionList.length == 1) {
       solutionIndex = 0;
     } else {
@@ -1642,7 +1641,6 @@ class RoundModel extends ChangeNotifier {
 }
 
 //****** IDEAS FOR ADDITIONAL FEATURES ***********
-//generate tutorial progression levels
 
 //re: round generation, maybe make it choose new solution nodes if none are arrows and a fair number of arrows exists?
 //way to check a saved round for multiple solutions using existing code?

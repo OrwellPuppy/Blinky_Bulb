@@ -365,8 +365,8 @@ class HowToScreen extends StatelessWidget {
       color: popupTextColor,
       fontFamily: 'roboto',
     );
-    var sMod = Provider.of<ScoreModel>(context, listen: false);
-    sMod.clearData();
+    //var sMod = Provider.of<ScoreModel>(context, listen: false);
+    //sMod.clearData();
     return SafeArea(
         child: Scaffold(
       backgroundColor: myBackground,
@@ -473,7 +473,7 @@ class ScoreScreen extends StatelessWidget {
     myNames = sMod.expertNames;
     myDates = sMod.expertDates;
     //print('@@@@@ this win streak: $thisWinStreak');
-    var myBoxDecoration;
+    BoxDecoration myBoxDecoration;
     var myRegularBoxDecoration = const BoxDecoration();
 
     var mySpecialBoxDecoration = BoxDecoration(
@@ -526,14 +526,14 @@ class ScoreScreen extends StatelessWidget {
                 )),
             const Spacer(),
             Text(
-              '${myDates[i]}',
+              myDates[i],
               style: scoreTextStyleInput,
             ),
             const Spacer(),
             Padding(
                 padding: EdgeInsets.only(right: sideSpace / 2),
                 child: Text(
-                  '${(myScores[i] == 0 ? '-' : myScores[i].toString()).padLeft(7, ' ')}',
+                  (myScores[i] == 0 ? '-' : myScores[i].toString()).padLeft(7, ' '),
                   style: scoreTextStyleInput,
                 )),
           ])));
